@@ -1,0 +1,10 @@
+{
+	"title"		:	"Sonic Screwdriver",
+	"type"		:	"tool",
+	"tags"		:	[ "roleplay", "fun" ],
+	"ignore"	:
+	[
+		"*.md",
+		"*.git*",
+	]
+}
