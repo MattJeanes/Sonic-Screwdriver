@@ -151,6 +151,8 @@ function SWEP:Go(ent, keydown1, keydown2)
 			ent.Victim=nil
 			msg="The Weeping Angel has been frozen in time."
 		end
+	elseif class=="gmod_wire_button" then
+		ent:Switch(not ent:IsOn())
 	end
 	if not (msg=="") then self.Owner:ChatPrint(msg) end
 end
