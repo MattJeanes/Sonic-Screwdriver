@@ -61,8 +61,10 @@ end
 
 function SWEP:Go(ent, keydown1, keydown2)
 	if not IsValid(ent) then return end
+	/* -- this will be better implemented at another time
 	local allowed=hook.Call("PhysgunPickup", GAMEMODE, self.Owner, ent)
 	if not allowed then return end
+	*/
 	local class=ent:GetClass()
 	local msg=""
 	if self:IsDoor(class) then

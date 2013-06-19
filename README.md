@@ -1,6 +1,6 @@
 Sonic-Screwdriver
 ===============
-A working SWEP version of the Sonic Screwdriver for Garry's Mod. It works with most Prop Protection addons if they are installed.
+A working SWEP version of the Sonic Screwdriver for Garry's Mod.
 
 Usage
 ===============
