@@ -93,8 +93,10 @@ function SWEP:Go(ent, keydown1, keydown2)
 				ent:Fire("Toggle", 0)
 			end
 		end
-	elseif ent.isWacAircraft then
+	elseif ent.isWacAircraft then //new base
 		ent:setEngine(!ent.active)
+	elseif (string.find(class, "wac_hc_") or string.find(class, "wac_pl_")) and not ent.isWacAircraft then //old base
+		ent:SwitchState()
 	elseif class=="func_button" then
 		ent:Fire("Press", 0)
 	elseif class=="gmod_button" then
