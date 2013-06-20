@@ -9,7 +9,7 @@ Simply point the screwdriver at something and hold mouse1/mouse2 for a second an
 
 At the moment, the sonic screwdriver can:
 • Open/close doors. (right click to lock/unlock)
-• Turn on/off the engines of WAC Aircraft. (only works in beta WAC at this time)
+• Turn on/off the engines of WAC Aircraft.
 • Press map/gmod buttons.
 • Turn on/off security camera/ceiling turret.
 • Make rollermines/turrets friendly/hostile.
