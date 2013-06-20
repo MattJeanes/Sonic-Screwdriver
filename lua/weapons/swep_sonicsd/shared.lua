@@ -36,6 +36,12 @@ SWEP.WaitTime = 1
 function SWEP:Initialize()
 	self:SetWeaponHoldType( self.HoldType )
 	self.sound=CreateSound(self,"sonicsd/loop.wav")
+	if CLIENT then
+		self.emitter = ParticleEmitter(self:GetPos())
+		self.rgb = string.Explode(" ", GetConVarString("cl_weaponcolor")) // getting weapon color for effect
+		for k,v in pairs(self.rgb) do self.rgb[k]=v*255 end // initially a vector, gotta make it RGB
+		self.drawlight = CreateClientConVar( "sonic_drawlight", "1", true, false )
+	end
 	self.eyeangles=Angle(0,0,0)
 	self.done=nil
 	self.wait=nil
@@ -161,8 +167,47 @@ function SWEP:Go(ent, keydown1, keydown2)
 		else
 			msg="Hopper Mine no longer friendly."
 		end
+	elseif class=="npc_turret_ground" then
+		ent:SetSaveValue("m_IdealNPCState",7)
 	end
 	if not (msg=="") then self.Owner:ChatPrint(msg) end	
+end
+
+function SWEP:OnRestore()
+	self:Initialize()
+end
+
+function SWEP:OnRemove()
+	if self.sound then self.sound:Stop() end
+end
+
+function SWEP:Holster( wep )
+	if self.sound then self.sound:Stop() end
+	return true
+end
+
+function SWEP:PreDrawViewModel(vm,ply,wep)
+	if CLIENT then
+		local cureffect=0
+		if (LocalPlayer():KeyDown(IN_ATTACK) or LocalPlayer():KeyDown(IN_ATTACK2)) and self.drawlight:GetBool()==true and CurTime()>cureffect then
+			cureffect=CurTime()+0.05
+			self.emitter:SetPos(vm:GetPos())
+			local velocity = LocalPlayer():GetVelocity()
+			local spawnpos = vm:LocalToWorld(Vector(20,-1.75,-2.75))
+			local particle = self.emitter:Add("sprites/glow04_noz", spawnpos)
+			if (particle) then
+				particle:SetVelocity(velocity)
+				particle:SetLifeTime(0)
+				particle:SetColor(self.rgb[1],self.rgb[2],self.rgb[3])
+				particle:SetDieTime(0.02)
+				particle:SetStartSize(3)
+				particle:SetEndSize(3)
+				particle:SetAirResistance(0)
+				particle:SetCollide(false)
+				particle:SetBounce(0)
+			end
+		end
+	end
 end
  
 //--------------------------------------------
@@ -170,7 +215,6 @@ end
 //--------------------------------------------
 function SWEP:Think()
 	if CLIENT then return end
-	if not self.sound then self:Initialize() end
 	local keydown1=self.Owner:KeyDown(IN_ATTACK)
 	local keydown2=self.Owner:KeyDown(IN_ATTACK2)
 	if keydown1 or keydown2 then
@@ -199,7 +243,7 @@ function SWEP:Think()
 			self.ent=nil
 		end
 	else
-		if self.sound:IsPlaying() then
+		if self.sound and self.sound:IsPlaying() then
 			self.sound:Stop()
 		end
 		self.done=nil
