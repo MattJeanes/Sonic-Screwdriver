@@ -153,8 +153,16 @@ function SWEP:Go(ent, keydown1, keydown2)
 		end
 	elseif class=="gmod_wire_button" then
 		ent:Switch(not ent:IsOn())
+	elseif class=="combine_mine" then
+		local hacked=tobool(ent:GetSaveTable().m_bPlacedByPlayer)
+		ent:SetSaveValue("m_bPlacedByPlayer", (not hacked))
+		if not hacked then //this is because the variable is reversed after 'hacked' is set.	
+			msg="Hopper Mine now friendly."
+		else
+			msg="Hopper Mine no longer friendly."
+		end
 	end
-	if not (msg=="") then self.Owner:ChatPrint(msg) end
+	if not (msg=="") then self.Owner:ChatPrint(msg) end	
 end
  
 //--------------------------------------------
