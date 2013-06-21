@@ -47,13 +47,6 @@ function SWEP:Initialize()
 	self.wait=nil
 	self.ent=nil
 end
- 
-//--------------------------------------------
-// Called when it reloads 
-//--------------------------------------------
-function SWEP:Reload() 
-	// All reload code goes in here
-end
 
 function SWEP:IsDoor(class)
 	local t={"func_door", "func_door_rotating", "prop_door_rotating"}
@@ -65,8 +58,8 @@ function SWEP:IsDoor(class)
 	return false
 end
 
-function SWEP:Go(ent, keydown1, keydown2)
-	if not IsValid(ent) then return end
+function SWEP:Go(ent, hitpos, keydown1, keydown2)
+	if not IsValid(ent) and not ent:IsWorld() then return end
 	/* -- this will be better implemented at another time
 	local allowed=hook.Call("PhysgunPickup", GAMEMODE, self.Owner, ent)
 	if not allowed then return end
@@ -153,9 +146,15 @@ function SWEP:Go(ent, keydown1, keydown2)
 		end
 	elseif class=="weepingangel" then
 		if ent.Victim == nil then
-			ent.Victim=self.Owner
-			msg="The Weeping Angel has been un-frozen in time."
+			local newvictim=self.Owner
+			if ent.OldVictim and IsValid(ent.OldVictim) and ent.OldVictim:IsPlayer() then
+				newvictim=ent.OldVictim
+			end
+			ent.Victim=newvictim
+			ent.OldVictim=nil
+			msg="The Weeping Angel has been un-frozen in time and is now chasing "..newvictim:Nick()
 		else
+			ent.OldVictim=ent.Victim
 			ent.Victim=nil
 			msg="The Weeping Angel has been frozen in time."
 		end
@@ -171,8 +170,33 @@ function SWEP:Go(ent, keydown1, keydown2)
 		end
 	elseif class=="npc_turret_ground" then
 		ent:SetSaveValue("m_IdealNPCState",7)
+	elseif class=="worldspawn" and ent:IsWorld() then
+		if IsValid(self.tardis) then
+			local ang=self.Owner:GetAngles()
+			self.tardis.vec=hitpos
+			self.tardis.ang=Angle(0,ang.y+180,0)
+			msg="TARDIS destination set."
+		else
+			msg="Please link a TARDIS."
+		end
+	elseif class=="sent_tardis" then
+		if keydown1 and not keydown2 then
+			self.tardis=ent
+			msg="TARDIS linked."
+		elseif keydown2 and not keydown1 then
+			if ent.vec and ent.ang then
+				ent:Go()
+			end
+		end
 	end
-	if not (msg=="") then self.Owner:ChatPrint(msg) end	
+	if not (msg=="") then self.Owner:ChatPrint(msg) end
+end
+
+function SWEP:Reload()
+	if self.tardis and IsValid(self.tardis) and not self.tardis.moving and self.tardis.vec and self.tardis.ang then
+		self.tardis:Go()
+		self.Owner:ChatPrint("TARDIS moving to set destination.")
+	end
 end
 
 function SWEP:OnRestore()
@@ -236,7 +260,7 @@ function SWEP:Think()
 			self.wait=CurTime()+self.WaitTime
 		end
 		if CurTime() > self.wait and self.ent==trace.Entity and not self.done then
-			self:Go(trace.Entity, keydown1, keydown2)
+			self:Go(trace.Entity, trace.HitPos, keydown1, keydown2)
 			self.done=true
 		end
 		if (self.done and not self.ent==trace.Entity) or not (self.ent==trace.Entity) then
