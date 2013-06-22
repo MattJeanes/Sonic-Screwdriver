@@ -218,15 +218,11 @@ function SWEP:Reload()
 			self.Owner:ChatPrint("TARDIS moving to set destination.")
 		elseif self.tardis and IsValid(self.tardis) and not self.tardis.moving and not self.tardis_vec and not self.tardis_ang then
 			local trace=util.QuickTrace( self.Owner:GetShootPos(), self.Owner:GetAimVector() * 99999, { self.Owner } )
-			if trace.HitWorld and trace.HitPos then
-				local ang=self.Owner:GetAngles()
-				self.tardis_vec=trace.HitPos
-				self.tardis_ang=Angle(0,ang.y+180,0)
-				self:MoveTARDIS(self.tardis)
-				self.Owner:ChatPrint("TARDIS moving to AimPos.")
-			end
-		elseif not self.tardis then
-			self.Owner:ChatPrint("Link a TARDIS.")
+			local ang=self.Owner:GetAngles()
+			self.tardis_vec=trace.HitPos
+			self.tardis_ang=Angle(0,ang.y+180,0)
+			self:MoveTARDIS(self.tardis)
+			self.Owner:ChatPrint("TARDIS moving to AimPos.")
 		end
 	end
 end
