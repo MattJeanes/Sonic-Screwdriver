@@ -182,7 +182,7 @@ function SWEP:Go(ent, hitpos, keydown1, keydown2)
 			end
 		elseif keydown2 and not keydown1 then
 			if not ent.moving and self.tardis_vec and self.tardis_ang then
-				self:MoveTARDIS()
+				self:MoveTARDIS(ent)
 				self.Owner:ChatPrint("TARDIS moving to set destination.")
 			elseif not ent.moving and not self.tardis_vec and not self.tardis_ang then
 				self.Owner:ChatPrint("Set TARDIS destination.")
@@ -204,8 +204,8 @@ function SWEP:Go(ent, hitpos, keydown1, keydown2)
 	if not (msg=="") then self.Owner:ChatPrint(msg) end
 end
 
-function SWEP:MoveTARDIS()
-	self.tardis:Go(self.tardis_vec, self.tardis_ang)
+function SWEP:MoveTARDIS(ent)
+	ent:Go(self.tardis_vec, self.tardis_ang)
 	self.tardis_vec=nil
 	self.tardis_ang=nil
 end
@@ -214,7 +214,7 @@ function SWEP:Reload()
 	if CurTime()>self.reloadcur then
 		self.reloadcur=CurTime()+1
 		if self.tardis and IsValid(self.tardis) and not self.tardis.moving and self.tardis_vec and self.tardis_ang then
-			self:MoveTARDIS()
+			self:MoveTARDIS(self.tardis)
 			self.Owner:ChatPrint("TARDIS moving to set destination.")
 		elseif self.tardis and IsValid(self.tardis) and not self.tardis.moving and not self.tardis_vec and not self.tardis_ang then
 			local trace=util.QuickTrace( self.Owner:GetShootPos(), self.Owner:GetAimVector() * 99999, { self.Owner } )
@@ -222,7 +222,7 @@ function SWEP:Reload()
 				local ang=self.Owner:GetAngles()
 				self.tardis_vec=trace.HitPos
 				self.tardis_ang=Angle(0,ang.y+180,0)
-				self:MoveTARDIS()
+				self:MoveTARDIS(self.tardis)
 				self.Owner:ChatPrint("TARDIS moving to AimPos.")
 			end
 		elseif not self.tardis then
