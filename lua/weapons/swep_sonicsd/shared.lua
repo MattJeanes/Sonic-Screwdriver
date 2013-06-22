@@ -46,6 +46,7 @@ function SWEP:Initialize()
 	self.done=nil
 	self.wait=nil
 	self.ent=nil
+	self.reloadcur=0
 end
 
 function SWEP:IsDoor(class)
@@ -170,32 +171,63 @@ function SWEP:Go(ent, hitpos, keydown1, keydown2)
 		end
 	elseif class=="npc_turret_ground" then
 		ent:SetSaveValue("m_IdealNPCState",7)
-	elseif class=="worldspawn" and ent:IsWorld() then
-		if IsValid(self.tardis) then
-			local ang=self.Owner:GetAngles()
-			self.tardis.vec=hitpos
-			self.tardis.ang=Angle(0,ang.y+180,0)
-			msg="TARDIS destination set."
-		else
-			msg="Please link a TARDIS."
-		end
 	elseif class=="sent_tardis" then
 		if keydown1 and not keydown2 then
-			self.tardis=ent
-			msg="TARDIS linked."
+			if self.tardis==ent then
+				self.tardis=nil
+				msg="TARDIS un-linked."
+			else
+				self.tardis=ent
+				msg="TARDIS linked."
+			end
 		elseif keydown2 and not keydown1 then
-			if ent.vec and ent.ang then
-				ent:Go()
+			if not ent.moving and self.tardis_vec and self.tardis_ang then
+				self:MoveTARDIS()
+				self.Owner:ChatPrint("TARDIS moving to set destination.")
+			elseif not ent.moving and not self.tardis_vec and not self.tardis_ang then
+				self.Owner:ChatPrint("Set TARDIS destination.")
 			end
 		end
+	elseif class=="prop_thumper" then
+		local enabled=tobool(ent:GetSaveTable().m_bEnabled)
+		if enabled then
+			ent:Fire("Disable", 0)
+		else
+			ent:Fire("Enable", 0)
+		end
+	elseif class=="worldspawn" and ent:IsWorld() and self.tardis then
+		local ang=self.Owner:GetAngles()
+		self.tardis_vec=hitpos
+		self.tardis_ang=Angle(0,ang.y+180,0)
+		msg="TARDIS destination set."
 	end
 	if not (msg=="") then self.Owner:ChatPrint(msg) end
 end
 
+function SWEP:MoveTARDIS()
+	self.tardis:Go(self.tardis_vec, self.tardis_ang)
+	self.tardis_vec=nil
+	self.tardis_ang=nil
+end
+
 function SWEP:Reload()
-	if self.tardis and IsValid(self.tardis) and not self.tardis.moving and self.tardis.vec and self.tardis.ang then
-		self.tardis:Go()
-		self.Owner:ChatPrint("TARDIS moving to set destination.")
+	if CurTime()>self.reloadcur then
+		self.reloadcur=CurTime()+1
+		if self.tardis and IsValid(self.tardis) and not self.tardis.moving and self.tardis_vec and self.tardis_ang then
+			self:MoveTARDIS()
+			self.Owner:ChatPrint("TARDIS moving to set destination.")
+		elseif self.tardis and IsValid(self.tardis) and not self.tardis.moving and not self.tardis_vec and not self.tardis_ang then
+			local trace=util.QuickTrace( self.Owner:GetShootPos(), self.Owner:GetAimVector() * 99999, { self.Owner } )
+			if trace.HitWorld and trace.HitPos then
+				local ang=self.Owner:GetAngles()
+				self.tardis_vec=trace.HitPos
+				self.tardis_ang=Angle(0,ang.y+180,0)
+				self:MoveTARDIS()
+				self.Owner:ChatPrint("TARDIS moving to AimPos.")
+			end
+		elseif not self.tardis then
+			self.Owner:ChatPrint("Link a TARDIS.")
+		end
 	end
 end
 
