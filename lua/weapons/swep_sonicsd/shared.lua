@@ -145,7 +145,7 @@ function SWEP:Go(ent, hitpos, keydown1, keydown2)
 		elseif keydown2 and not keydown1 then
 			ent:Fire("Close", 0)
 		end
-	elseif class=="weepingangel" then
+	elseif class=="weepingangel" or class=="cube" or class=="cube2" then
 		if ent.Victim == nil then
 			local newvictim=self.Owner
 			if ent.OldVictim and IsValid(ent.OldVictim) and ent.OldVictim:IsPlayer() then
@@ -153,11 +153,15 @@ function SWEP:Go(ent, hitpos, keydown1, keydown2)
 			end
 			ent.Victim=newvictim
 			ent.OldVictim=nil
-			msg="The Weeping Angel has been un-frozen in time and is now chasing "..newvictim:Nick()
+			local name="Weeping Angel"
+			if class=="cube" or class=="cube2" then name="Cube" end
+			msg="The "..name.." has been un-frozen in time and is now chasing "..newvictim:Nick()
 		else
 			ent.OldVictim=ent.Victim
 			ent.Victim=nil
-			msg="The Weeping Angel has been frozen in time."
+			local name="Weeping Angel"
+			if class=="cube" or class=="cube2" then name="Cube" end
+			msg="The "..name.." has been frozen in time."
 		end
 	elseif class=="gmod_wire_button" then
 		ent:Switch(not ent:IsOn())
