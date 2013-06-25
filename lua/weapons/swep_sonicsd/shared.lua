@@ -5,6 +5,7 @@ SWEP.Author             = "Dr. Matt"
 SWEP.Contact            = "mattjeanes23@gmail.com"
 SWEP.Purpose            = "Opening doors"
 SWEP.Instructions       = "Point and press"
+SWEP.Category			= "Doctor Who"
 //----------------------------------------------
  
 SWEP.Spawnable = true
