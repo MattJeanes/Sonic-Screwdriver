@@ -22,7 +22,8 @@ At the moment, the sonic screwdriver can:
 • Disable/enable the npc helicopter's weaponry.
 • Stop or Reverse (right click) map trains. (func_tracktrain)
 • Force a barnacle to drop whatever it's eating.
-• Freeze/Unfreeze weeping angels in time.
+• Freeze/Unfreeze weeping angels/harmless companion cubes in time.
+• Interact with the TARDIS.
 
 Installation
 ===============
