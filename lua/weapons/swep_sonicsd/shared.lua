@@ -178,19 +178,21 @@ function SWEP:Go(ent, hitpos, keydown1, keydown2)
 		ent:SetSaveValue("m_IdealNPCState",7)
 	elseif class=="sent_tardis" then
 		if keydown1 and not keydown2 then
-			if self.tardis==ent then
-				self.tardis=nil
+			if self.Owner.linked_tardis==ent then
+				self.Owner.linked_tardis=nil
 				msg="TARDIS un-linked."
 			else
-				self.tardis=ent
+				self.Owner.linked_tardis=ent
 				msg="TARDIS linked."
 			end
 		elseif keydown2 and not keydown1 then
-			if not ent.moving and self.tardis_vec and self.tardis_ang then
-				self:MoveTARDIS(ent)
-				self.Owner:ChatPrint("TARDIS moving to set destination.")
-			elseif not ent.moving and not self.tardis_vec and not self.tardis_ang then
-				self.Owner:ChatPrint("Set TARDIS destination.")
+			local success=ent:TogglePhase()
+			if success then
+				if ent.visible then
+					msg="TARDIS now visible."
+				else
+					msg="TARDIS no longer visible."
+				end
 			end
 		end
 	elseif class=="prop_thumper" then
@@ -200,33 +202,33 @@ function SWEP:Go(ent, hitpos, keydown1, keydown2)
 		else
 			ent:Fire("Enable", 0)
 		end
-	elseif class=="worldspawn" and ent:IsWorld() and self.tardis then
+	elseif class=="worldspawn" and ent:IsWorld() and self.Owner.linked_tardis then
 		local ang=self.Owner:GetAngles()
-		self.tardis_vec=hitpos
-		self.tardis_ang=Angle(0,ang.y+180,0)
+		self.Owner.tardis_vec=hitpos
+		self.Owner.tardis_ang=Angle(0,ang.y+180,0)
 		msg="TARDIS destination set."
 	end
 	if not (msg=="") then self.Owner:ChatPrint(msg) end
 end
 
 function SWEP:MoveTARDIS(ent)
-	ent:Go(self.tardis_vec, self.tardis_ang)
-	self.tardis_vec=nil
-	self.tardis_ang=nil
+	ent:Go(self.Owner.tardis_vec, self.Owner.tardis_ang)
+	self.Owner.tardis_vec=nil
+	self.Owner.tardis_ang=nil
 end
 
 function SWEP:Reload()
 	if CurTime()>self.reloadcur then
 		self.reloadcur=CurTime()+1
-		if self.tardis and IsValid(self.tardis) and not self.tardis.moving and self.tardis_vec and self.tardis_ang then
-			self:MoveTARDIS(self.tardis)
+		if self.Owner.linked_tardis and IsValid(self.Owner.linked_tardis) and not self.Owner.linked_tardis.moving and self.Owner.tardis_vec and self.Owner.tardis_ang then
+			self:MoveTARDIS(self.Owner.linked_tardis)
 			self.Owner:ChatPrint("TARDIS moving to set destination.")
-		elseif self.tardis and IsValid(self.tardis) and not self.tardis.moving and not self.tardis_vec and not self.tardis_ang then
+		elseif self.Owner.linked_tardis and IsValid(self.Owner.linked_tardis) and not self.Owner.linked_tardis.moving and not self.Owner.tardis_vec and not self.Owner.tardis_ang then
 			local trace=util.QuickTrace( self.Owner:GetShootPos(), self.Owner:GetAimVector() * 99999, { self.Owner } )
 			local ang=self.Owner:GetAngles()
-			self.tardis_vec=trace.HitPos
-			self.tardis_ang=Angle(0,ang.y+180,0)
-			self:MoveTARDIS(self.tardis)
+			self.Owner.tardis_vec=trace.HitPos
+			self.Owner.tardis_ang=Angle(0,ang.y+180,0)
+			self:MoveTARDIS(self.Owner.linked_tardis)
 			self.Owner:ChatPrint("TARDIS moving to AimPos.")
 		end
 	end
