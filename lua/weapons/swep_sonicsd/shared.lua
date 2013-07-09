@@ -176,19 +176,25 @@ function SWEP:Go(ent, hitpos, keydown1, keydown2)
 		end
 	elseif class=="npc_turret_ground" then
 		ent:SetSaveValue("m_IdealNPCState",7)
-	elseif class=="sent_tardis" then
+	elseif class=="sent_tardis" or class=="sent_tardis_interior" then
+		local e
+		if class=="sent_tardis_interior" then
+			e=ent.tardis
+		else
+			e=ent
+		end
 		if keydown1 and not keydown2 then
-			if self.Owner.linked_tardis==ent then
+			if self.Owner.linked_tardis==e then
 				self.Owner.linked_tardis=nil
 				msg="TARDIS un-linked."
 			else
-				self.Owner.linked_tardis=ent
+				self.Owner.linked_tardis=e
 				msg="TARDIS linked."
 			end
 		elseif keydown2 and not keydown1 then
-			local success=ent:TogglePhase()
+			local success=e:TogglePhase()
 			if success then
-				if ent.visible then
+				if e.visible then
 					msg="TARDIS now visible."
 				else
 					msg="TARDIS no longer visible."
