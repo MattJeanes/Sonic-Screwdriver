@@ -48,6 +48,7 @@ function SWEP:Initialize()
 	self.wait=nil
 	self.ent=nil
 	self.reloadcur=0
+	self.curbeep=0
 end
 
 function SWEP:IsDoor(class)
@@ -256,7 +257,9 @@ end
 function SWEP:PreDrawViewModel(vm,ply,wep)
 	if CLIENT then
 		local cureffect=0
-		if (LocalPlayer():KeyDown(IN_ATTACK) or LocalPlayer():KeyDown(IN_ATTACK2)) and self.drawlight:GetBool()==true and CurTime()>cureffect then
+		local keydown1=LocalPlayer():KeyDown(IN_ATTACK)
+		local keydown2=LocalPlayer():KeyDown(IN_ATTACK2)
+		if (keydown1 or keydown2) and self.drawlight:GetBool()==true and CurTime()>cureffect then
 			cureffect=CurTime()+0.05
 			self.emitter:SetPos(vm:GetPos())
 			local velocity = LocalPlayer():GetVelocity()
@@ -276,6 +279,25 @@ function SWEP:PreDrawViewModel(vm,ply,wep)
 		end
 	end
 end
+
+function SWEP:PointingAt(ent)
+	if not IsValid(ent) then return end
+	
+	local ViewEnt = self.Owner:GetViewEntity()
+	local fov = 15
+	local Disp = ent:GetPos() - ViewEnt:GetPos()
+	local Dist = Disp:Length()
+	local Width = 100
+	
+	local MaxCos = math.abs( math.cos( math.acos( Dist / math.sqrt( Dist * Dist + Width * Width ) ) + fov * ( math.pi / 180 ) ) )
+	Disp:Normalize()
+	
+	if Disp:Dot( ViewEnt:EyeAngles():Forward() ) > MaxCos then
+		return true
+	end
+	
+    return false
+end
  
 //--------------------------------------------
 // Called each frame when the Swep is active
@@ -284,6 +306,7 @@ function SWEP:Think()
 	if CLIENT then return end
 	local keydown1=self.Owner:KeyDown(IN_ATTACK)
 	local keydown2=self.Owner:KeyDown(IN_ATTACK2)
+	
 	if keydown1 or keydown2 then
 		local diff=self.Owner:EyeAngles()-self.eyeangles
 		if diff.p < 0 then diff.p=-diff.p end
@@ -295,28 +318,44 @@ function SWEP:Think()
 			self.sound:Play()
 		end
 		
-		local trace = util.QuickTrace( self.Owner:GetShootPos(), self.Owner:GetAimVector() * 1000, { self.Owner } )
-		if not self.ent and not self.wait and trace.Entity then
-			self.ent=trace.Entity
+		if (keydown1 and keydown2) and self.Owner.linked_tardis and IsValid(self.Owner.linked_tardis) then
+			local tardis=self.Owner.linked_tardis
+			if CurTime()>self.curbeep then
+				if self:PointingAt(tardis) then
+					self.curbeep=CurTime()+0.4
+					self:EmitSound("sonicsd/beep.wav")
+				else
+					self.curbeep=CurTime()+1
+					self:EmitSound("sonicsd/beep.wav")
+				end
+			end
 			self.wait=CurTime()+self.WaitTime
+		else
+			local trace = util.QuickTrace( self.Owner:GetShootPos(), self.Owner:GetAimVector() * 1000, { self.Owner } )
+			if not self.ent and not self.wait and trace.Entity then
+				self.ent=trace.Entity
+				self.wait=CurTime()+self.WaitTime
+			end
+			if CurTime() > self.wait and self.ent==trace.Entity and not self.done then
+				self:Go(trace.Entity, trace.HitPos, keydown1, keydown2)
+				self.done=true
+			end
+			if (self.done and not self.ent==trace.Entity) or not (self.ent==trace.Entity) then
+				self.done=nil
+				self.wait=nil
+				self.ent=nil
+			end
 		end
-		if CurTime() > self.wait and self.ent==trace.Entity and not self.done then
-			self:Go(trace.Entity, trace.HitPos, keydown1, keydown2)
-			self.done=true
-		end
-		if (self.done and not self.ent==trace.Entity) or not (self.ent==trace.Entity) then
-			self.done=nil
-			self.wait=nil
-			self.ent=nil
-		end
-	else
-		if self.sound and self.sound:IsPlaying() then
-			self.sound:Stop()
-		end
-		self.done=nil
-		self.wait=nil
-		self.ent=nil
+		
+		return
 	end
+	
+	if self.sound and self.sound:IsPlaying() then
+		self.sound:Stop()
+	end
+	self.done=nil
+	self.wait=nil
+	self.ent=nil
 end 
  
 //--------------------------------------------
