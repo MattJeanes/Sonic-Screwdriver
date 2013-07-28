@@ -31,24 +31,33 @@ SWEP.HoldType = "pistol"
 
 SWEP.WaitTime = 1
 
+if SERVER then
+	util.AddNetworkString("Sonic-SetLinkedTARDIS")
+elseif CLIENT then
+	net.Receive("Sonic-SetLinkedTARDIS", function()
+		LocalPlayer().linked_tardis=net.ReadEntity()
+	end)
+end
+
 //--------------------------------------------
 // Called on initilization
 //--------------------------------------------
 function SWEP:Initialize()
 	self:SetWeaponHoldType( self.HoldType )
-	self.sound=CreateSound(self,"sonicsd/loop.wav")
 	if CLIENT then
+		self.curbeep=0
+		self.eyeangles=Angle(0,0,0)
+		self.sound=CreateSound(self,"sonicsd/loop.wav")
 		self.emitter = ParticleEmitter(self:GetPos())
 		self.rgb = string.Explode(" ", GetConVarString("cl_weaponcolor")) // getting weapon color for effect
 		for k,v in pairs(self.rgb) do self.rgb[k]=v*255 end // initially a vector, gotta make it RGB
 		self.drawlight = CreateClientConVar( "sonic_drawlight", "1", true, false )
+	elseif SERVER then
+		self.done=nil
+		self.wait=nil
+		self.ent=nil
+		self.reloadcur=0
 	end
-	self.eyeangles=Angle(0,0,0)
-	self.done=nil
-	self.wait=nil
-	self.ent=nil
-	self.reloadcur=0
-	self.curbeep=0
 end
 
 function SWEP:IsDoor(class)
@@ -187,9 +196,15 @@ function SWEP:Go(ent, hitpos, keydown1, keydown2)
 		if keydown1 and not keydown2 then
 			if self.Owner.linked_tardis==e then
 				self.Owner.linked_tardis=nil
+				net.Start("Sonic-SetLinkedTARDIS")
+					net.WriteEntity(NULL)
+				net.Send(self.Owner)
 				msg="TARDIS un-linked."
 			else
 				self.Owner.linked_tardis=e
+				net.Start("Sonic-SetLinkedTARDIS")
+					net.WriteEntity(e)
+				net.Send(self.Owner)
 				msg="TARDIS linked."
 			end
 		elseif keydown2 and not keydown1 then
@@ -225,6 +240,7 @@ function SWEP:MoveTARDIS(ent)
 end
 
 function SWEP:Reload()
+	if CLIENT then return end
 	if CurTime()>self.reloadcur then
 		self.reloadcur=CurTime()+1
 		if self.Owner.linked_tardis and IsValid(self.Owner.linked_tardis) and not self.Owner.linked_tardis.moving and self.Owner.tardis_vec and self.Owner.tardis_ang then
@@ -303,24 +319,26 @@ end
 // Called each frame when the Swep is active
 //--------------------------------------------
 function SWEP:Think()
-	if CLIENT then return end
 	local keydown1=self.Owner:KeyDown(IN_ATTACK)
 	local keydown2=self.Owner:KeyDown(IN_ATTACK2)
 	
 	if keydown1 or keydown2 then
-		local diff=self.Owner:EyeAngles()-self.eyeangles
-		if diff.p < 0 then diff.p=-diff.p end
-		if diff.y < 0 then diff.y=-diff.y end
-		local pitch=diff.p+diff.y*2.5
-		self.sound:ChangePitch(math.Clamp(pitch+100,100,150),0)
-		self.eyeangles=self.Owner:EyeAngles()
-		if not self.sound:IsPlaying() then
-			self.sound:Play()
+		if CLIENT then
+			local diff=self.Owner:EyeAngles()-self.eyeangles
+			if diff.p < 0 then diff.p=-diff.p end
+			if diff.y < 0 then diff.y=-diff.y end
+			local pitch=diff.p+diff.y*15
+			self.sound:ChangePitch(math.Clamp(pitch+100,100,150),0.1)
+			self.eyeangles=self.Owner:EyeAngles()
+			if not self.sound:IsPlaying() then
+				self.sound:Play()
+			end
 		end
 		
 		if (keydown1 and keydown2) and self.Owner.linked_tardis and IsValid(self.Owner.linked_tardis) then
-			local tardis=self.Owner.linked_tardis
-			if CurTime()>self.curbeep then
+			if CLIENT and CurTime()>self.curbeep then
+				local tardis=self.Owner.linked_tardis
+				print("lol")
 				if self:PointingAt(tardis) then
 					self.curbeep=CurTime()+0.4
 					self:EmitSound("sonicsd/beep.wav")
@@ -329,8 +347,10 @@ function SWEP:Think()
 					self:EmitSound("sonicsd/beep.wav")
 				end
 			end
-			self.wait=CurTime()+self.WaitTime
-		else
+			if SERVER then
+				self.wait=CurTime()+self.WaitTime
+			end
+		elseif SERVER then
 			local trace = util.QuickTrace( self.Owner:GetShootPos(), self.Owner:GetAimVector() * 1000, { self.Owner } )
 			if not self.ent and not self.wait and trace.Entity then
 				self.ent=trace.Entity
@@ -350,7 +370,7 @@ function SWEP:Think()
 		return
 	end
 	
-	if self.sound and self.sound:IsPlaying() then
+	if CLIENT and self.sound and self.sound:IsPlaying() then
 		self.sound:Stop()
 	end
 	self.done=nil
