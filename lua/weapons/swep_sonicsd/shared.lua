@@ -29,7 +29,7 @@ SWEP.Secondary.Automatic = false
 SWEP.Secondary.Ammo = "none"
 SWEP.HoldType = "pistol"
 
-SWEP.WaitTime = 1
+SWEP.WaitTime = 0.5
 
 if SERVER then
 	util.AddNetworkString("Sonic-SetLinkedTARDIS")
@@ -72,43 +72,46 @@ end
 
 function SWEP:Go(ent, hitpos, keydown1, keydown2)
 	if not IsValid(ent) and not ent:IsWorld() then return end
-	/* -- this will be better implemented at another time
-	local allowed=hook.Call("PhysgunPickup", GAMEMODE, self.Owner, ent)
-	if not allowed then return end
-	*/
+	
+	//hooks time, for prop protection addons and stuff!
+	local hooks={}
+	hooks.canuse=hook.Call("PlayerUse", GAMEMODE, self.Owner, ent)
+	hooks.canmove=hook.Call("PhysgunPickup", GAMEMODE, self.Owner, ent)
+	hooks.cantool=hook.Call("CanTool", GAMEMODE, self.Owner, self.Owner:GetEyeTraceNoCursor(), "")
+	
 	local class=ent:GetClass()
 	local msg=""
 	if self:IsDoor(class) then
 		local savetable = ent:GetSaveTable()
 		local open=(not tobool(savetable.m_toggle_state))
 		local locked=tobool(savetable.m_bLocked)
-		if locked and keydown2 then
+		if locked and keydown2 and hooks.cantool then
 			ent:Fire("Unlock", 0)
 			ent:EmitSound("doors/door_latch3.wav")
 			msg="Door unlocked."
-		elseif not locked and keydown2 then
+		elseif not locked and keydown2 and hooks.cantool then
 			ent:Fire("Lock", 0)
 			ent:EmitSound("doors/door_latch3.wav")
 			msg="Door locked."
 		end
-		if keydown1 and not keydown2 then
+		if keydown1 and not keydown2 and hooks.canuse then
 			if locked then
 				msg="Door locked, right click to open"
 			else
 				ent:Fire("Toggle", 0)
 			end
 		end
-	elseif ent.isWacAircraft then //new base
+	elseif ent.isWacAircraft and hooks.cantool then //new base
 		ent:setEngine(!ent.active)
-	elseif (string.find(class, "wac_hc_") or string.find(class, "wac_pl_")) and not ent.isWacAircraft then //old base
+	elseif (string.find(class, "wac_hc_") or string.find(class, "wac_pl_")) and not ent.isWacAircraft and hooks.cantool then //old base
 		ent:SwitchState()
-	elseif class=="func_button" then
+	elseif class=="func_button" and hooks.canuse then
 		ent:Fire("Press", 0)
-	elseif class=="gmod_button" then
+	elseif (class=="gmod_button" or class=="gmod_wire_button") and hooks.canuse then
 		ent:Use( self.Owner, self, USE_ON, 0 )
-	elseif class=="npc_combine_camera" then
+	elseif class=="npc_combine_camera" and hooks.cantool then
 		ent:Fire("Toggle", 0)
-	elseif class=="npc_turret_floor" or class=="npc_rollermine" then
+	elseif (class=="npc_turret_floor" or class=="npc_rollermine") and hooks.cantool then
 		local hacked=tobool(ent:GetSaveTable().m_bHackedByAlyx)
 		ent:SetSaveValue("m_bHackedByAlyx", (not hacked))
 		if not hacked then //this is because the variable is reversed after 'hacked' is set.	
@@ -116,29 +119,33 @@ function SWEP:Go(ent, hitpos, keydown1, keydown2)
 		else
 			msg="NPC no longer friendly."
 		end
-	elseif class=="npc_turret_ceiling" then
+	elseif class=="npc_turret_ceiling" and hooks.cantool then
 		ent:Fire("Toggle",0)
-	elseif class=="npc_cscanner" or class=="npc_clawscanner" then
+	elseif (class=="npc_cscanner" or class=="npc_clawscanner") and hooks.cantool then
 		ent:Fire("Break", 0)
-	elseif class=="npc_manhack" then
+	elseif class=="npc_manhack" and hooks.cantool then
 		ent:Fire("InteractivePowerDown", 0)
-	elseif class=="pewpew_base_cannon" then
+	elseif class=="pewpew_base_cannon" and hooks.cantool then
 		ent:FireBullet()
-	elseif class=="func_breakable" or class=="func_breakable_surf" or class=="func_physbox" then
+	elseif (class=="func_breakable" or class=="func_breakable_surf" or class=="func_physbox") and hooks.cantool then
 		ent:Fire("Break", 0)
-	elseif class=="func_tracktrain" then
+	elseif class=="func_tracktrain" and hooks.canuse then
 		if keydown1 and not keydown2 then
 			ent:Fire("Toggle", 0)
 		elseif keydown2 and not keydown1 then
 			ent:Fire("Reverse", 0)
 		end
-	elseif class=="prop_physics" or class=="prop_physics_multiplayer" then
-		if ent:GetSaveTable().max_health > 1 then
+	elseif (class=="prop_physics" or class=="prop_physics_multiplayer") and hooks.canmove then
+		local phys=ent:GetPhysicsObject()
+		if IsValid(phys) then
+			phys:AddVelocity(self.Owner:GetAimVector()*200)
+		end
+		if (ent:GetSaveTable().max_health > 1) and hooks.cantool then
 			ent:Fire("Break", 0)
 		end
-	elseif class=="item_item_crate" then
+	elseif class=="item_item_crate" and hooks.cantool then
 		ent:TakeDamage(100, self.Owner, self) //ent:Fire("Break", 0) crashed the game
-	elseif class=="npc_helicopter" then
+	elseif class=="npc_helicopter" and hooks.cantool then
 		if keydown1 and not keydown2 then
 			ent:Fire("MissileOff", 0)
 			ent:Fire("GunOff", 0)
@@ -148,15 +155,15 @@ function SWEP:Go(ent, hitpos, keydown1, keydown2)
 			ent:Fire("MissileOn", 0)
 			msg="Helicopter weaponry enabled."
 		end
-	elseif class=="npc_barnacle" then
+	elseif class=="npc_barnacle" and hooks.canuse then
 		ent:Fire("LetGo", 0)
-	elseif class=="func_movelinear" then
+	elseif class=="func_movelinear" and hooks.canuse then
 		if keydown1 and not keydown2 then
 			ent:Fire("Open", 0)
 		elseif keydown2 and not keydown1 then
 			ent:Fire("Close", 0)
 		end
-	elseif class=="weepingangel" or class=="cube" or class=="cube2" then
+	elseif (class=="weepingangel" or class=="cube" or class=="cube2") and hooks.cantool then
 		if ent.Victim == nil then
 			local newvictim=self.Owner
 			if ent.OldVictim and IsValid(ent.OldVictim) and ent.OldVictim:IsPlayer() then
@@ -174,9 +181,7 @@ function SWEP:Go(ent, hitpos, keydown1, keydown2)
 			if class=="cube" or class=="cube2" then name="Cube" end
 			msg="The "..name.." has been frozen in time."
 		end
-	elseif class=="gmod_wire_button" then
-		ent:Switch(not ent:IsOn())
-	elseif class=="combine_mine" then
+	elseif class=="combine_mine" and hooks.cantool then
 		local hacked=tobool(ent:GetSaveTable().m_bPlacedByPlayer)
 		ent:SetSaveValue("m_bPlacedByPlayer", (not hacked))
 		if not hacked then //this is because the variable is reversed after 'hacked' is set.	
@@ -184,9 +189,17 @@ function SWEP:Go(ent, hitpos, keydown1, keydown2)
 		else
 			msg="Hopper Mine no longer friendly."
 		end
-	elseif class=="npc_turret_ground" then
+	elseif class=="npc_turret_ground" and hooks.cantool then
 		ent:SetSaveValue("m_IdealNPCState",7)
-	elseif class=="sent_tardis" or class=="sent_tardis_interior" then
+	elseif ent:IsNPC() and hooks.cantool then
+		if keydown1 and not keydown2 then
+			ent:AddEntityRelationship(self.Owner, D_LI, 999)
+			msg="NPC now friendly towards you."
+		elseif keydown2 and not keydown1 then
+			ent:AddEntityRelationship(self.Owner, D_HT, 999)
+			msg="NPC no longer friendly towards you."
+		end
+	elseif (class=="sent_tardis" or class=="sent_tardis_interior") and hooks.cantool then
 		local e
 		if class=="sent_tardis_interior" then
 			e=ent.tardis
@@ -217,7 +230,7 @@ function SWEP:Go(ent, hitpos, keydown1, keydown2)
 				end
 			end
 		end
-	elseif class=="prop_thumper" then
+	elseif class=="prop_thumper" and hooks.cantool then
 		local enabled=tobool(ent:GetSaveTable().m_bEnabled)
 		if enabled then
 			ent:Fire("Disable", 0)
@@ -338,7 +351,6 @@ function SWEP:Think()
 		if (keydown1 and keydown2) and self.Owner.linked_tardis and IsValid(self.Owner.linked_tardis) then
 			if CLIENT and CurTime()>self.curbeep then
 				local tardis=self.Owner.linked_tardis
-				print("lol")
 				if self:PointingAt(tardis) then
 					self.curbeep=CurTime()+0.4
 					self:EmitSound("sonicsd/beep.wav")
