@@ -208,11 +208,12 @@ function SWEP:Go(ent, hitpos, keydown1, keydown2)
 		end
 		if keydown1 and not keydown2 then
 			if self.Owner.linked_tardis==e then
-				self.Owner.linked_tardis=nil
-				net.Start("Sonic-SetLinkedTARDIS")
-					net.WriteEntity(NULL)
-				net.Send(self.Owner)
-				msg="TARDIS un-linked."
+				locked=e:ToggleLocked()
+				if locked then
+					msg="TARDIS locked."
+				else
+					msg="TARDIS unlocked."
+				end
 			else
 				self.Owner.linked_tardis=e
 				net.Start("Sonic-SetLinkedTARDIS")
