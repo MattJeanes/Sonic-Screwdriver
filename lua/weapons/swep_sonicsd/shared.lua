@@ -289,22 +289,36 @@ function SWEP:PreDrawViewModel(vm,ply,wep)
 		local cureffect=0
 		local keydown1=LocalPlayer():KeyDown(IN_ATTACK)
 		local keydown2=LocalPlayer():KeyDown(IN_ATTACK2)
-		if (keydown1 or keydown2) and self.drawlight:GetBool()==true and CurTime()>cureffect then
-			cureffect=CurTime()+0.05
-			self.emitter:SetPos(vm:GetPos())
-			local velocity = LocalPlayer():GetVelocity()
-			local spawnpos = vm:LocalToWorld(Vector(20,-1.75,-2.75))
-			local particle = self.emitter:Add("sprites/glow04_noz", spawnpos)
-			if (particle) then
-				particle:SetVelocity(velocity)
-				particle:SetLifeTime(0)
-				particle:SetColor(self.rgb[1],self.rgb[2],self.rgb[3])
-				particle:SetDieTime(0.02)
-				particle:SetStartSize(3)
-				particle:SetEndSize(3)
-				particle:SetAirResistance(0)
-				particle:SetCollide(false)
-				particle:SetBounce(0)
+		if (keydown1 or keydown2) and self.drawlight:GetBool()==true then
+			if CurTime()>cureffect then
+				cureffect=CurTime()+0.05
+				self.emitter:SetPos(vm:GetPos())
+				local velocity = LocalPlayer():GetVelocity()
+				local spawnpos = vm:LocalToWorld(Vector(20,-1.75,-2.75))
+				local particle = self.emitter:Add("sprites/glow04_noz", spawnpos)
+				if (particle) then
+					particle:SetVelocity(velocity)
+					particle:SetLifeTime(0)
+					particle:SetColor(self.rgb[1],self.rgb[2],self.rgb[3])
+					particle:SetDieTime(0.02)
+					particle:SetStartSize(3)
+					particle:SetEndSize(3)
+					particle:SetAirResistance(0)
+					particle:SetCollide(false)
+					particle:SetBounce(0)
+				end
+			end
+			local dlight = DynamicLight( self:EntIndex() )
+			if ( dlight ) then
+				local size=256
+				dlight.Pos = vm:LocalToWorld(Vector(40,-1.75,-2.75))
+				dlight.r = self.rgb[1]
+				dlight.g = self.rgb[2]
+				dlight.b = self.rgb[3]
+				dlight.Brightness = 5
+				dlight.Decay = size * 5
+				dlight.Size = size
+				dlight.DieTime = CurTime() + 1
 			end
 		end
 	end
