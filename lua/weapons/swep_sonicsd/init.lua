@@ -168,11 +168,13 @@ function SWEP:Go(ent, hitpos, keydown1, keydown2)
 		end
 		if keydown1 and not keydown2 then
 			if self.Owner.linked_tardis==e then
-				locked=e:ToggleLocked()
-				if locked then
-					msg="TARDIS locked."
-				else
-					msg="TARDIS unlocked."
+				local success=e:ToggleLocked()
+				if success then
+					if e.locked then
+						msg="TARDIS locked."
+					else
+						msg="TARDIS unlocked."
+					end
 				end
 			else
 				self.Owner.linked_tardis=e
