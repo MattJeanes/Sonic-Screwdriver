@@ -30,8 +30,11 @@ function SWEP:IsDoor(class)
 	return false
 end
 
-function SWEP:Go(ent, hitpos, keydown1, keydown2)
+function SWEP:Go(ent, trace, keydown1, keydown2)
 	if not IsValid(ent) and not ent:IsWorld() then return end
+	
+	local hitpos=trace.HitPos
+	local hitnorm=trace.HitNormal
 	
 	//hooks time, for prop protection addons and stuff!
 	local hooks={}
@@ -201,9 +204,10 @@ function SWEP:Go(ent, hitpos, keydown1, keydown2)
 			ent:Fire("Enable", 0)
 		end
 	elseif class=="worldspawn" and ent:IsWorld() and self.Owner.linked_tardis then
-		local ang=self.Owner:GetAngles()
 		self.Owner.tardis_vec=hitpos
-		self.Owner.tardis_ang=Angle(0,ang.y+180,0)
+		local ang=hitnorm:Angle()
+		ang:RotateAroundAxis( ang:Right( ), -90 )
+		self.Owner.tardis_ang=ang
 		msg="TARDIS destination set."
 	end
 	if not (msg=="") then self.Owner:ChatPrint(msg) end
@@ -223,9 +227,10 @@ function SWEP:Reload()
 			self.Owner:ChatPrint("TARDIS moving to set destination.")
 		elseif self.Owner.linked_tardis and IsValid(self.Owner.linked_tardis) and not self.Owner.linked_tardis.moving and not self.Owner.tardis_vec and not self.Owner.tardis_ang then
 			local trace=util.QuickTrace( self.Owner:GetShootPos(), self.Owner:GetAimVector() * 99999, { self.Owner } )
-			local ang=self.Owner:GetAngles()
 			self.Owner.tardis_vec=trace.HitPos
-			self.Owner.tardis_ang=Angle(0,ang.y+180,0)
+			local ang=trace.HitNormal:Angle()
+			ang:RotateAroundAxis( ang:Right( ), -90 )
+			self.Owner.tardis_ang=ang
 			self:MoveTARDIS(self.Owner.linked_tardis)
 			self.Owner:ChatPrint("TARDIS moving to AimPos.")
 		end
@@ -249,7 +254,7 @@ function SWEP:Think()
 				self.wait=CurTime()+self.WaitTime
 			end
 			if CurTime() > self.wait and self.ent==trace.Entity and not self.done then
-				self:Go(trace.Entity, trace.HitPos, keydown1, keydown2)
+				self:Go(trace.Entity, trace, keydown1, keydown2)
 				self.done=true
 			end
 			if (self.done and not self.ent==trace.Entity) or not (self.ent==trace.Entity) then
