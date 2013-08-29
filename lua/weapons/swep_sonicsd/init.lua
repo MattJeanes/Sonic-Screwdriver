@@ -222,17 +222,23 @@ end
 function SWEP:Reload()
 	if CurTime()>self.reloadcur then
 		self.reloadcur=CurTime()+1
-		if self.Owner.linked_tardis and IsValid(self.Owner.linked_tardis) and not self.Owner.linked_tardis.moving and self.Owner.tardis_vec and self.Owner.tardis_ang then
-			self:MoveTARDIS(self.Owner.linked_tardis)
-			self.Owner:ChatPrint("TARDIS moving to set destination.")
-		elseif self.Owner.linked_tardis and IsValid(self.Owner.linked_tardis) and not self.Owner.linked_tardis.moving and not self.Owner.tardis_vec and not self.Owner.tardis_ang then
-			local trace=util.QuickTrace( self.Owner:GetShootPos(), self.Owner:GetAimVector() * 99999, { self.Owner } )
-			self.Owner.tardis_vec=trace.HitPos
-			local ang=trace.HitNormal:Angle()
-			ang:RotateAroundAxis( ang:Right( ), -90 )
-			self.Owner.tardis_ang=ang
-			self:MoveTARDIS(self.Owner.linked_tardis)
-			self.Owner:ChatPrint("TARDIS moving to AimPos.")
+		local tardis = self.Owner.linked_tardis
+		if IsValid(self.Owner.linked_tardis) then
+			if not tardis.moving and self.Owner.tardis_vec and self.Owner.tardis_ang then
+				self:MoveTARDIS(self.Owner.linked_tardis)
+				self.Owner:ChatPrint("TARDIS moving to set destination.")
+			elseif not tardis.moving and not self.Owner.tardis_vec and not self.Owner.tardis_ang then
+				local trace=util.QuickTrace( self.Owner:GetShootPos(), self.Owner:GetAimVector() * 99999, { self.Owner } )
+				self.Owner.tardis_vec=trace.HitPos
+				local ang=trace.HitNormal:Angle()
+				ang:RotateAroundAxis( ang:Right(), -90 )
+				self.Owner.tardis_ang=ang
+				self:MoveTARDIS(tardis)
+				self.Owner:ChatPrint("TARDIS moving to AimPos.")
+			elseif tardis.moving and tardis.longflight and tardis.invortex then
+				self.Owner.linked_tardis:LongReappear()
+				self.Owner:ChatPrint("TARDIS materialising.")
+			end
 		end
 	end
 end
