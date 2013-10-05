@@ -169,8 +169,24 @@ function SWEP:Go(ent, trace, keydown1, keydown2)
 		else
 			e=ent
 		end
-		if keydown1 and not keydown2 then
+		if self.Owner:KeyDown(IN_WALK) then
 			if self.Owner.linked_tardis==e then
+				self.Owner.linked_tardis=NULL
+				net.Start("Sonic-SetLinkedTARDIS")
+					net.WriteEntity(NULL)
+				net.Send(self.Owner)
+				msg="TARDIS unlinked."
+			elseif e.owner==self.Owner then
+				self.Owner.linked_tardis=e
+				net.Start("Sonic-SetLinkedTARDIS")
+					net.WriteEntity(e)
+				net.Send(self.Owner)
+				msg="TARDIS linked."
+			else
+				msg="You may only link a TARDIS you spawned."
+			end
+		else
+			if keydown1 and not keydown2 then
 				local success=e:ToggleLocked()
 				if success then
 					if e.locked then
@@ -179,20 +195,14 @@ function SWEP:Go(ent, trace, keydown1, keydown2)
 						msg="TARDIS unlocked."
 					end
 				end
-			else
-				self.Owner.linked_tardis=e
-				net.Start("Sonic-SetLinkedTARDIS")
-					net.WriteEntity(e)
-				net.Send(self.Owner)
-				msg="TARDIS linked."
-			end
-		elseif keydown2 and not keydown1 then
-			local success=e:TogglePhase()
-			if success then
-				if e.visible then
-					msg="TARDIS now visible."
-				else
-					msg="TARDIS no longer visible."
+			elseif keydown2 and not keydown1 then
+				local success=e:TogglePhase()
+				if success then
+					if e.visible then
+						msg="TARDIS now visible."
+					else
+						msg="TARDIS no longer visible."
+					end
 				end
 			end
 		end
