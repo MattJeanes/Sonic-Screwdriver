@@ -176,7 +176,7 @@ function SWEP:Go(ent, trace, keydown1, keydown2)
 					net.WriteEntity(NULL)
 				net.Send(self.Owner)
 				msg="TARDIS unlinked."
-			elseif e.owner==self.Owner then
+			elseif e.owner==self.Owner or (self.Owner:IsAdmin() or self.Owner:IsSuperAdmin()) then
 				self.Owner.linked_tardis=e
 				net.Start("Sonic-SetLinkedTARDIS")
 					net.WriteEntity(e)
@@ -212,6 +212,16 @@ function SWEP:Go(ent, trace, keydown1, keydown2)
 			ent:Fire("Disable", 0)
 		else
 			ent:Fire("Enable", 0)
+		end
+	elseif string.find( class, "sent_sakarias_car" ) and not (string.find( class, "sent_sakarias_carwheel" ) or string.find( class, "sent_sakarias_carwheel_punked" ) or ent.IsDestroyed == 1) then
+		if ent:PlayerCanUseLock( self.Owner ) then
+			if ent:IsLocked() then
+				ent:UnLock( true )
+				msg="SCar unlocked."
+			else
+				ent:Lock( true )
+				msg="SCar locked."
+			end
 		end
 	elseif class=="worldspawn" and ent:IsWorld() and self.Owner.linked_tardis then
 		self.Owner.tardis_vec=hitpos
