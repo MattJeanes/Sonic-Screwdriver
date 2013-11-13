@@ -41,7 +41,6 @@ function SWEP:Go(ent, trace, keydown1, keydown2)
 	hooks.canuse=hook.Call("PlayerUse", GAMEMODE, self.Owner, ent)
 	hooks.canmove=hook.Call("PhysgunPickup", GAMEMODE, self.Owner, ent)
 	hooks.cantool=hook.Call("CanTool", GAMEMODE, self.Owner, self.Owner:GetEyeTraceNoCursor(), "")
-	
 	local class=ent:GetClass()
 	local msg=""
 	if self:IsDoor(class) then
@@ -63,6 +62,13 @@ function SWEP:Go(ent, trace, keydown1, keydown2)
 			else
 				ent:Fire("Toggle", 0)
 			end
+		end
+	elseif self.Owner:KeyDown(IN_WALK) and self.Owner.linked_tardis and IsValid(self.Owner.linked_tardis) and keydown2 and not keydown1 and hooks.cantool then
+		self.Owner.linked_tardis:SetTrackingEnt(ent)
+		if IsValid(self.Owner.linked_tardis.trackingent) then
+			msg="Tracking entity set."
+		else
+			msg="Tracking disabled."
 		end
 	elseif ent.isWacAircraft and hooks.cantool then //new base
 		ent:setEngine(!ent.active)
