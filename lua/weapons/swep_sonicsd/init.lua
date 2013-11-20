@@ -230,11 +230,17 @@ function SWEP:Go(ent, trace, keydown1, keydown2)
 			end
 		end
 	elseif class=="worldspawn" and ent:IsWorld() and self.Owner.linked_tardis then
-		self.Owner.tardis_vec=hitpos
-		local ang=hitnorm:Angle()
-		ang:RotateAroundAxis( ang:Right( ), -90 )
-		self.Owner.tardis_ang=ang
-		msg="TARDIS destination set."
+		if self.Owner:KeyDown(IN_WALK) then
+			self.Owner.tardis_vec=nil
+			self.Owner.tardis_ang=nil
+			msg="TARDIS destination unset."
+		else
+			self.Owner.tardis_vec=hitpos
+			local ang=hitnorm:Angle()
+			ang:RotateAroundAxis( ang:Right( ), -90 )
+			self.Owner.tardis_ang=ang
+			msg="TARDIS destination set."
+		end
 	end
 	if not (msg=="") then self.Owner:ChatPrint(msg) end
 end
