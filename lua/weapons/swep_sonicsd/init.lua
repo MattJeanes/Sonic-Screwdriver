@@ -233,12 +233,20 @@ function SWEP:Go(ent, trace, keydown1, keydown2)
 		if self.Owner:KeyDown(IN_WALK) then
 			self.Owner.tardis_vec=nil
 			self.Owner.tardis_ang=nil
+			local tardis=self.Owner.linked_tardis
+			if IsValid(tardis) and tardis.invortex then
+				tardis:SetDestination(tardis:GetPos(),tardis:GetAngles())
+			end
 			msg="TARDIS destination unset."
 		else
 			self.Owner.tardis_vec=hitpos
 			local ang=hitnorm:Angle()
 			ang:RotateAroundAxis( ang:Right( ), -90 )
 			self.Owner.tardis_ang=ang
+			local tardis=self.Owner.linked_tardis
+			if IsValid(tardis) and tardis.invortex then
+				tardis:SetDestination(hitpos,ang)
+			end
 			msg="TARDIS destination set."
 		end
 	end
