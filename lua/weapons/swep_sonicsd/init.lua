@@ -229,6 +229,43 @@ function SWEP:Go(ent, trace, keydown1, keydown2)
 				msg="SCar locked."
 			end
 		end
+	elseif class=="gmod_wire_keypad" and WireLib and hooks.cantool then
+		//bit hacky but the keypad hates everyone
+		if keydown1 and not keydown2 then
+			ent:SetNetworkedString("keypad_display", "y")
+			Wire_TriggerOutput(ent, "Valid", 1)
+			ent:EmitSound("buttons/button9.wav")
+		elseif keydown2 and not keydown1 then
+			ent:SetNetworkedString("keypad_display", "n")
+			Wire_TriggerOutput(ent, "Invalid", 1)
+			ent:EmitSound("buttons/button8.wav")
+		end
+		if (keydown1 and not keydown2) or (keydown2 and not keydown1) then
+			ent.CurrentNum = -1
+			timer.Create("wire_keypad_"..ent:EntIndex().."_"..tostring((keydown1 and not keydown2)), 2, 1, function()
+				if IsValid(ent) then
+					ent:SetNetworkedString("keypad_display", "")
+					ent.CurrentNum = 0
+					if access then
+						Wire_TriggerOutput(ent, "Valid", 0)
+					else
+						Wire_TriggerOutput(ent, "Invalid", 0)
+					end
+				end
+			end)
+		end
+	elseif class=="wired_door" and WireLib and hooks.cantool then
+		if keydown1 and not keydown2 then
+			ent:openself()
+		elseif keydown2 and not keydown1 then
+			ent:closeself()
+		end
+	elseif class=="prop_dynamic" and hooks.cantool then
+		if keydown1 and not keydown2 then
+			ent:Fire("setanimation", "open", 0)
+		elseif keydown2 and not keydown1 then
+			ent:Fire("setanimation", "close", 0)
+		end
 	elseif class=="worldspawn" and ent:IsWorld() and self.Owner.linked_tardis then
 		if self.Owner:KeyDown(IN_WALK) then
 			self.Owner.tardis_vec=nil
