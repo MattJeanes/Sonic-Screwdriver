@@ -266,6 +266,8 @@ function SWEP:Go(ent, trace, keydown1, keydown2)
 		elseif keydown2 and not keydown1 then
 			ent:Fire("setanimation", "close", 0)
 		end
+	elseif ent.tardis_part then
+		ent:Use(self.Owner, self.Owner, USE_ON, 1)
 	elseif class=="worldspawn" and ent:IsWorld() and self.Owner.linked_tardis then
 		if self.Owner:KeyDown(IN_WALK) then
 			self.Owner.tardis_vec=nil

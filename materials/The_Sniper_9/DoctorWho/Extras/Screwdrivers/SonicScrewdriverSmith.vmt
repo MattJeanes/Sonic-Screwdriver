@@ -6,7 +6,7 @@
 	"$surfaceprop" "Metal"
 	Proxies
 	{
-		PlayerWeaponColor
+		SonicSDColor
 		{
 			resultVar	$selfillumtint
 		}
