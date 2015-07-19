@@ -8,115 +8,25 @@ SWEP.DrawCrosshair      = true
 
 function SWEP:Initialize()
 	self:SetWeaponHoldType( self.HoldType )
-	self.curbeep=0
-	self.eyeangles=Angle(0,0,0)
-	self.sound=CreateSound(self,"sonicsd/loop.wav")
-	self.emitter = ParticleEmitter(self:GetPos())
-	self.rgb = Color(GetConVarNumber("sonic_light_r"), GetConVarNumber("sonic_light_g"), GetConVarNumber("sonic_light_b"))
-end
-
-function SWEP:PointingAt(ent)
-	if not IsValid(ent) then return end
-	
-	local ViewEnt = self.Owner:GetViewEntity()
-	local fov = 20
-	local Disp = ent:GetPos() - ViewEnt:GetPos()
-	local Dist = Disp:Length()
-	local Width = 100
-	
-	local MaxCos = math.abs( math.cos( math.acos( Dist / math.sqrt( Dist * Dist + Width * Width ) ) + fov * ( math.pi / 180 ) ) )
-	Disp:Normalize()
-	local dot=Disp:Dot( ViewEnt:EyeAngles():Forward() )
-	local tr=self.Owner:GetEyeTraceNoCursor()
-	
-	if IsValid(tr.Entity) and tr.Entity==ent then
-		return 0.25
-	elseif dot>MaxCos then
-		return math.Clamp((1-dot)*2+0.3,0.1,1)
-	else
-		return 1
-	end
+	self:CallHook("Initialize")
 end
 
 function SWEP:OnRemove()
-	if self.sound then self.sound:Stop() end
+	self:CallHook("OnRemove")
 end
 
-function SWEP:Holster( wep )
-	if self.sound then self.sound:Stop() end
+function SWEP:Holster(wep)
+	self:CallHook("Holster",wep)
 end
 
 function SWEP:PreDrawViewModel(vm,ply,wep)
-	local cureffect=0
 	local keydown1=LocalPlayer():KeyDown(IN_ATTACK)
 	local keydown2=LocalPlayer():KeyDown(IN_ATTACK2)
-	if (keydown1 or keydown2) then
-		local r,g,b=GetConVarNumber("sonic_light_r"),GetConVarNumber("sonic_light_g"),GetConVarNumber("sonic_light_b")
-		if tobool(GetConVarNumber("sonic_light")) and CurTime()>cureffect then
-			cureffect=CurTime()+0.05
-			self.emitter:SetPos(vm:GetPos())
-			local velocity = LocalPlayer():GetVelocity()
-			local spawnpos = vm:LocalToWorld(Vector(20,-1.75,-2.75))
-			local particle = self.emitter:Add("sprites/glow04_noz", spawnpos)
-			if (particle) then
-				particle:SetVelocity(velocity)
-				particle:SetLifeTime(0)
-				particle:SetColor(r,g,b)
-				particle:SetDieTime(0.02)
-				particle:SetStartSize(3)
-				particle:SetEndSize(3)
-				particle:SetAirResistance(0)
-				particle:SetCollide(false)
-				particle:SetBounce(0)
-			end
-		end
-		if tobool(GetConVarNumber("sonic_dynamiclight")) then
-			local dlight = DynamicLight( self:EntIndex() )
-			if ( dlight ) then
-				local size=75
-				dlight.Pos = vm:LocalToWorld(Vector(40,-1.75,0))
-				dlight.r = r
-				dlight.g = g
-				dlight.b = b
-				dlight.Brightness = 5
-				dlight.Decay = size * 5
-				dlight.Size = size
-				dlight.DieTime = CurTime() + 1
-			end
-		end
-	end
+	self:CallHook("PreDrawViewModel", vm,ply,wep,keydown1,keydown2)
 end
 
 function SWEP:Think()
 	local keydown1=LocalPlayer():KeyDown(IN_ATTACK)
-	local keydown2=LocalPlayer():KeyDown(IN_ATTACK2)
-	if keydown1 or keydown2 then
-		if tobool(GetConVarNumber("sonic_sound"))==true then
-			local diff=self.Owner:EyeAngles()-self.eyeangles
-			if diff.p < 0 then diff.p=-diff.p end
-			if diff.y < 0 then diff.y=-diff.y end
-			local pitch=diff.p+diff.y*15
-			self.sound:ChangePitch(math.Clamp(pitch+100,100,150),0.1)
-			self.eyeangles=self.Owner:EyeAngles()
-			if not self.sound:IsPlaying() then
-				self.sound:Play()
-			end
-		elseif self.sound and self.sound:IsPlaying() then
-			self.sound:Stop()
-		end
-		
-		if (keydown1 and keydown2) and self.Owner.linked_tardis and IsValid(self.Owner.linked_tardis) and CurTime()>self.curbeep then
-			local tardis=self.Owner.linked_tardis
-				local n=self:PointingAt(tardis)
-				print(n)
-				self.curbeep=CurTime()+n
-				self:EmitSound("sonicsd/beep.wav")
-		end
-	elseif self.sound and self.sound:IsPlaying() then
-		self.sound:Stop()
-	end
+	local keydown2=LocalPlayer():KeyDown(IN_ATTACK2)	
+	self:CallHook("Think", keydown1, keydown2)
 end
-
-net.Receive("Sonic-SetLinkedTARDIS", function()
-	LocalPlayer().linked_tardis=net.ReadEntity()
-end)
