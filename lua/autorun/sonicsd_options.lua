@@ -13,6 +13,7 @@ end
 CreateClientConVar("sonic_light_r", "0", true)
 CreateClientConVar("sonic_light_g", "255", true)
 CreateClientConVar("sonic_light_b", "0", true)
+CreateClientConVar("sonic_model", "0", true, true)
 
 hook.Add("PopulateToolMenu", "SonicSD-PopulateToolMenu", function()
 	spawnmenu.AddToolMenuOption("Options", "Doctor Who", "Sonic_Options", "Sonic Screwdriver", "", "", function(panel)
@@ -40,5 +41,30 @@ hook.Add("PopulateToolMenu", "SonicSD-PopulateToolMenu", function()
 			panel:AddItem(checkBox)
 			table.insert(checkboxes, checkBox)
 		end
+		
+		local skins={
+			{"2010 Model", 0},
+			{"2005 Model", 1}
+		}
+		local comboBox = vgui.Create("DComboBox")
+		comboBox:SetText("Model")
+		for k,v in ipairs(skins) do
+			comboBox:AddChoice(v[1])
+		end
+		for k,v in pairs(skins) do
+			if GetConVarNumber("sonic_model")==v[2] then
+				comboBox:ChooseOption(v[1])
+			end
+		end
+		comboBox.OnSelect = function(panel,index,value,data)
+			local n=0
+			for k,v in pairs(skins) do
+				if value==v[1] then
+					n=v[2]
+				end
+			end
+			RunConsoleCommand("sonic_model", n)
+		end
+		panel:AddItem(comboBox)
 	end)
 end)

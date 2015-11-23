@@ -13,7 +13,8 @@ SWEP:AddHook("PreDrawViewModel", "light", function(self,vm,ply,wep,keydown1,keyd
 			cureffect=CurTime()+0.05
 			self.emitter:SetPos(vm:GetPos())
 			local velocity = LocalPlayer():GetVelocity()
-			local spawnpos = vm:LocalToWorld(Vector(20,-1.75,-2.75))
+			local pos=self.Models[self:GetSonicModel()][3]
+			local spawnpos = vm:LocalToWorld(pos)
 			local particle = self.emitter:Add("sprites/glow04_noz", spawnpos)
 			if (particle) then
 				particle:SetVelocity(velocity)
@@ -35,7 +36,7 @@ SWEP:AddHook("PreDrawViewModel", "light", function(self,vm,ply,wep,keydown1,keyd
 				dlight.r = r
 				dlight.g = g
 				dlight.b = b
-				dlight.Brightness = 5
+				dlight.Brightness = self.Models[self:GetSonicModel()][4]
 				dlight.Decay = size * 5
 				dlight.Size = size
 				dlight.DieTime = CurTime() + 1

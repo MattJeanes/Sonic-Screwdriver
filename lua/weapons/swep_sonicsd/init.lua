@@ -7,9 +7,6 @@ SWEP.AutoSwitchTo = false
 SWEP.AutoSwitchFrom = false
 SWEP.WaitTime = 0.5
 
-//--------------------------------------------
-// Called on initilization
-//--------------------------------------------
 function SWEP:Initialize()
 	self:SetWeaponHoldType( self.HoldType )
 	self.done=nil
@@ -35,10 +32,20 @@ function SWEP:Reload()
 	self:CallHook("Reload")
 end
 
-//--------------------------------------------
-// Called each frame when the Swep is active
-//--------------------------------------------
+function SWEP:FirstThink()
+	local modelid=self.Owner:GetInfoNum("sonic_model",0)
+	local model=self.Models[modelid]
+	self.ViewModel=model[1]
+	self.WorldModel=model[2]
+	self:SetSonicModel(modelid)
+	self:SetModel(self.WorldModel)
+end
+
 function SWEP:Think()
+	if not self.firstthink then
+		self:FirstThink()
+		self.firstthink=true
+	end
 	local keydown1=self.Owner:KeyDown(IN_ATTACK)
 	local keydown2=self.Owner:KeyDown(IN_ATTACK2)
 	
