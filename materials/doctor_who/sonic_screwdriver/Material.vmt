@@ -1,0 +1,5 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "doctor_who/sonic_screwdriver/Material"
+	"$translucent" 0
+}

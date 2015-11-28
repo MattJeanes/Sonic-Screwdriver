@@ -24,6 +24,12 @@ SWEP.Models = {
 		"models/doctor_who/sonic_screwdriver/w_10thsonicsd.mdl",
 		Vector(20,-2.5,-3.15),
 		2
+	},
+	[2] = {
+		"models/doctor_who/sonic_screwdriver/c_4thsonicsd.mdl",
+		"models/doctor_who/sonic_screwdriver/w_4thsonicsd.mdl",
+		Vector(20,-2.1,-2.3),
+		5
 	}
 }
 

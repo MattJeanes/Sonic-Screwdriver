@@ -44,7 +44,8 @@ hook.Add("PopulateToolMenu", "SonicSD-PopulateToolMenu", function()
 		
 		local skins={
 			{"2010 Model", 0},
-			{"2005 Model", 1}
+			{"2005 Model", 1},
+			{"1968 Model", 2}	
 		}
 		local comboBox = vgui.Create("DComboBox")
 		comboBox:SetText("Model")
