@@ -1,4 +1,4 @@
-//Sonic Screwdriver Spawnmenu Options
+-- Options
 
 local checkbox_options={
 	{"Sound", "sonic_sound"},
@@ -42,29 +42,19 @@ hook.Add("PopulateToolMenu", "SonicSD-PopulateToolMenu", function()
 			table.insert(checkboxes, checkBox)
 		end
 		
-		local skins={
-			{"2010 Model", 0},
-			{"2005 Model", 1},
-			{"1968 Model", 2}	
-		}
 		local comboBox = vgui.Create("DComboBox")
 		comboBox:SetText("Model")
-		for k,v in ipairs(skins) do
-			comboBox:AddChoice(v[1])
+		for k,v in pairs(SonicSD.sonics) do
+			v.OptionID=comboBox:AddChoice(v.Name,v.ID)
 		end
-		for k,v in pairs(skins) do
-			if GetConVarNumber("sonic_model")==v[2] then
-				comboBox:ChooseOption(v[1])
+		local selectedmodel=GetConVarString("sonic_model")
+		for k,v in pairs(SonicSD.sonics) do
+			if selectedmodel==v.ID then
+				comboBox:ChooseOption(v.OptionID)
 			end
 		end
 		comboBox.OnSelect = function(panel,index,value,data)
-			local n=0
-			for k,v in pairs(skins) do
-				if value==v[1] then
-					n=v[2]
-				end
-			end
-			RunConsoleCommand("sonic_model", n)
+			RunConsoleCommand("sonic_model", data)
 		end
 		panel:AddItem(comboBox)
 	end)

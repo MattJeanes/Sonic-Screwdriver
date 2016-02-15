@@ -8,12 +8,13 @@ end)
 SWEP:AddHook("PreDrawViewModel", "light", function(self,vm,ply,wep,keydown1,keydown2)
 	local cureffect=0
 	if (keydown1 or keydown2) then
+		local sonic=self:GetSonic()
 		local r,g,b=GetConVarNumber("sonic_light_r"),GetConVarNumber("sonic_light_g"),GetConVarNumber("sonic_light_b")
 		if tobool(GetConVarNumber("sonic_light")) and CurTime()>cureffect then
 			cureffect=CurTime()+0.05
 			self.emitter:SetPos(vm:GetPos())
 			local velocity = LocalPlayer():GetVelocity()
-			local pos=self.Models[self:GetSonicModel()][3]
+			local pos=sonic.LightPos
 			local spawnpos = vm:LocalToWorld(pos)
 			local particle = self.emitter:Add("sprites/glow04_noz", spawnpos)
 			if (particle) then
@@ -36,7 +37,7 @@ SWEP:AddHook("PreDrawViewModel", "light", function(self,vm,ply,wep,keydown1,keyd
 				dlight.r = r
 				dlight.g = g
 				dlight.b = b
-				dlight.Brightness = self.Models[self:GetSonicModel()][4]
+				dlight.Brightness = sonic.LightBrightness
 				dlight.Decay = size * 5
 				dlight.Size = size
 				dlight.DieTime = CurTime() + 1

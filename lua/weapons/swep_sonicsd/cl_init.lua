@@ -20,14 +20,12 @@ function SWEP:Holster(wep)
 end
 
 function SWEP:DrawWorldModel()
-	local model=self.Models[self:GetSonicModel()][2]
-	self:SetModel(model)
+	self:SetModel(self:GetSonic().WorldModel)
 	self:DrawModel()
 end
 
 function SWEP:PreDrawViewModel(vm,ply,wep)
-	local model=self.Models[self:GetSonicModel()][1]
-	vm:SetModel(model)
+	vm:SetModel(self:GetSonic().ViewModel)
 	local keydown1=LocalPlayer():KeyDown(IN_ATTACK)
 	local keydown2=LocalPlayer():KeyDown(IN_ATTACK2)
 	self:CallHook("PreDrawViewModel",vm,ply,wep,keydown1,keydown2)

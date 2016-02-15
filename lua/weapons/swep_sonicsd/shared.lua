@@ -12,29 +12,13 @@ SWEP.Spawnable = true
 SWEP.AdminSpawnable = true
 
 SWEP.UseHands = true
-SWEP.Models = {
-	[0] = {
-		"models/weapons/c_sonicsd.mdl", -- View model
-		"models/weapons/w_sonicsd.mdl", -- World model
-		Vector(20,-1.75,-2.75), -- Particle light offset
-		5 -- Particle light brightness
-	},
-	[1] = {
-		"models/doctor_who/sonic_screwdriver/c_10thsonicsd.mdl",
-		"models/doctor_who/sonic_screwdriver/w_10thsonicsd.mdl",
-		Vector(20,-2.5,-3.15),
-		2
-	},
-	[2] = {
-		"models/doctor_who/sonic_screwdriver/c_4thsonicsd.mdl",
-		"models/doctor_who/sonic_screwdriver/w_4thsonicsd.mdl",
-		Vector(20,-2.1,-2.3),
-		5
-	}
-}
 
 function SWEP:SetupDataTables()
-	self:NetworkVar( "Int", 0, "SonicModel" );
+	self:NetworkVar( "String", 0, "SonicID" );
+end
+
+function SWEP:GetSonic()
+	return SonicSD.sonics[self:GetSonicID()] or SonicSD.sonics.default
 end
 
 // Weapon Details

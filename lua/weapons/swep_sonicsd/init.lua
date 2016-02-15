@@ -33,11 +33,11 @@ function SWEP:Reload()
 end
 
 function SWEP:FirstThink()
-	local modelid=self.Owner:GetInfoNum("sonic_model",0)
-	local model=self.Models[modelid]
-	self.ViewModel=model[1]
-	self.WorldModel=model[2]
-	self:SetSonicModel(modelid)
+	local id=self.Owner:GetInfo("sonic_model","default")
+	self:SetSonicID(id)
+	local sonic=self:GetSonic()
+	self.ViewModel=sonic.ViewModel
+	self.WorldModel=sonic.WorldModel
 	self:SetModel(self.WorldModel)
 end
 
