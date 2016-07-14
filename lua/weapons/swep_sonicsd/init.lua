@@ -12,6 +12,7 @@ function SWEP:Initialize()
 	self.done=nil
 	self.wait=nil
 	self.ent=nil
+	self.reloadcur=0
 	self:CallHook("Initialize")
 end
 
@@ -19,9 +20,24 @@ function SWEP:Go(ent, trace, keydown1, keydown2)
 	if not IsValid(ent) and not ent:IsWorld() then return end
 	
 	local hooks={}
-	hooks.canuse=hook.Call("PlayerUse", GAMEMODE, self.Owner, ent)
-	hooks.canmove=hook.Call("PhysgunPickup", GAMEMODE, self.Owner, ent)
-	hooks.cantool=hook.Call("CanTool", GAMEMODE, self.Owner, self.Owner:GetEyeTraceNoCursor(), "")
+	local use = self:CallHook("CanUse",self.Owner,ent)
+	if use~=nil then
+		hooks.canuse = use
+	else
+		hooks.canuse=hook.Call("PlayerUse", GAMEMODE, self.Owner, ent)
+	end
+	local move = self:CallHook("CanMove",self.Owner,ent)
+	if move~=nil then
+		hooks.canmove = move
+	else
+		hooks.canmove=hook.Call("PhysgunPickup", GAMEMODE, self.Owner, ent)
+	end
+	local tool = self:CallHook("CanTool",self.Owner,ent)
+	if tool~=nil then
+		hooks.cantool = tool
+	else
+		hooks.cantool=hook.Call("CanTool", GAMEMODE, self.Owner, self.Owner:GetEyeTraceNoCursor(), "")
+	end
 	local class=ent:GetClass()
 	for k,v in ipairs(self.functions) do
 		v(self,{class=class,ent=ent,hooks=hooks,keydown1=keydown1,keydown2=keydown2,trace=trace})
@@ -29,7 +45,10 @@ function SWEP:Go(ent, trace, keydown1, keydown2)
 end
 
 function SWEP:Reload()
-	self:CallHook("Reload")
+	if CurTime()>self.reloadcur then
+		self.reloadcur=CurTime()+1
+		self:CallHook("Reload")
+	end
 end
 
 function SWEP:FirstThink()
