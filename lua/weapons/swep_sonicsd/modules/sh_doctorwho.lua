@@ -22,7 +22,6 @@ if SERVER then
 		if IsValid(tardis) then
 			local moving = (tardis.moving or (tardis.GetData and tardis:GetData("teleport",false)))
 			local vortex = (tardis.invortex or (tardis.GetData and tardis:GetData("vortex",false)))
-			print(moving,vortex)
 			if (not moving) and (not vortex) and self.Owner.tardis_vec and self.Owner.tardis_ang then
 				self:MoveTARDIS(self.Owner.linked_tardis)
 				self.Owner:ChatPrint("TARDIS moving to set destination.")
