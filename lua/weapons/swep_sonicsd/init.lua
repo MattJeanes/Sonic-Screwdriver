@@ -7,13 +7,15 @@ SWEP.AutoSwitchTo = false
 SWEP.AutoSwitchFrom = false
 SWEP.WaitTime = 0.5
 
+util.AddNetworkString("SonicSD-Initialize")
+
 function SWEP:Initialize()
 	self:SetWeaponHoldType( self.HoldType )
 	self.done=nil
 	self.wait=nil
 	self.ent=nil
 	self.reloadcur=0
-	self:CallHook("Initialize")
+	self._initqueue={}
 end
 
 function SWEP:Go(ent, trace, keydown1, keydown2)
@@ -45,15 +47,43 @@ function SWEP:Go(ent, trace, keydown1, keydown2)
 end
 
 function SWEP:Reload()
-	if CurTime()>self.reloadcur then
+	if self._ready and CurTime()>self.reloadcur then
 		self.reloadcur=CurTime()+1
 		self:CallHook("Reload")
 	end
 end
 
+function SWEP:InitClient(ply)
+	net.Start("SonicSD-Initialize")
+		net.WriteEntity(self)
+		net.WriteString(self:GetSonicID())
+	net.Send(ply)
+end
+
+net.Receive("SonicSD-Initialize",function(len,ply)
+	local sonic = net.ReadEntity()
+	if IsValid(sonic) and sonic:GetClass()=="swep_sonicsd" then
+		if sonic._ready then
+			sonic:InitClient(ply)
+		else
+			table.insert(sonic._initqueue,ply)
+		end
+	end
+end)
+
 function SWEP:FirstThink()
+	-- Owner only exists now, not in init unfortunately
 	local id=self.Owner:GetInfo("sonic_model","default")
 	self:SetSonicID(id)
+	
+	self._ready = true
+	self:CallHook("Initialize")
+	
+	for _,ply in pairs(self._initqueue) do
+		self:InitClient(ply)
+	end
+	self._initqueue=nil
+	
 	local sonic=self:GetSonic()
 	self.ViewModel=sonic.ViewModel
 	self.WorldModel=sonic.WorldModel
@@ -65,33 +95,36 @@ function SWEP:Think()
 		self:FirstThink()
 		self.firstthink=true
 	end
-	local keydown1=self.Owner:KeyDown(IN_ATTACK)
-	local keydown2=self.Owner:KeyDown(IN_ATTACK2)
 	
-	if keydown1 or keydown2 then
-		if (keydown1 and keydown2) and self.Owner.linked_tardis and IsValid(self.Owner.linked_tardis) then
-			self.wait=CurTime()+self.WaitTime
-		else
-			local trace = util.QuickTrace( self.Owner:GetShootPos(), self.Owner:GetAimVector() * 1000, { self.Owner } )
-			if not self.ent and not self.wait and trace.Entity then
-				self.ent=trace.Entity
+	if self._ready then
+		local keydown1=self.Owner:KeyDown(IN_ATTACK)
+		local keydown2=self.Owner:KeyDown(IN_ATTACK2)
+		
+		if keydown1 or keydown2 then
+			if (keydown1 and keydown2) and self.Owner.linked_tardis and IsValid(self.Owner.linked_tardis) then
 				self.wait=CurTime()+self.WaitTime
+			else
+				local trace = util.QuickTrace( self.Owner:GetShootPos(), self.Owner:GetAimVector() * 1000, { self.Owner } )
+				if not self.ent and not self.wait and trace.Entity then
+					self.ent=trace.Entity
+					self.wait=CurTime()+self.WaitTime
+				end
+				if CurTime() > self.wait and self.ent==trace.Entity and not self.done then
+					self:Go(trace.Entity, trace, keydown1, keydown2)
+					self.done=true
+				end
+				if (self.done and not self.ent==trace.Entity) or not (self.ent==trace.Entity) then
+					self.done=nil
+					self.wait=nil
+					self.ent=nil
+				end
 			end
-			if CurTime() > self.wait and self.ent==trace.Entity and not self.done then
-				self:Go(trace.Entity, trace, keydown1, keydown2)
-				self.done=true
-			end
-			if (self.done and not self.ent==trace.Entity) or not (self.ent==trace.Entity) then
-				self.done=nil
-				self.wait=nil
-				self.ent=nil
-			end
+		else
+			self.done=nil
+			self.wait=nil
+			self.ent=nil
 		end
-	else
-		self.done=nil
-		self.wait=nil
-		self.ent=nil
+		
+		self:CallHook("Think",keydown1,keydown2)
 	end
-	
-	self:CallHook("Think",keydown1,keydown2)
 end

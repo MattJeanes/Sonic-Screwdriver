@@ -3,7 +3,7 @@
 SWEP:AddHook("Initialize", "sound", function(self)
 	self.curbeep=0
 	self.eyeangles=Angle(0,0,0)
-	self.sound=CreateSound(self,"sonicsd/loop.wav")
+	self.sound=CreateSound(self,self:GetSonic().SoundLoop)
 end)
 
 SWEP:AddHook("OnRemove", "sound", function(self)

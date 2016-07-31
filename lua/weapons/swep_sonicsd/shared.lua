@@ -13,8 +13,12 @@ SWEP.AdminSpawnable = true
 
 SWEP.UseHands = true
 
-function SWEP:SetupDataTables()
-	self:NetworkVar( "String", 0, "SonicID" );
+function SWEP:GetSonicID()
+	return self.sonicid
+end
+
+function SWEP:SetSonicID(id)
+	self.sonicid = id
 end
 
 function SWEP:GetSonic()
