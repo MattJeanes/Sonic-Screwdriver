@@ -93,26 +93,24 @@ if SERVER then
 			else
 				e=data.ent
 			end
-			if self.Owner:KeyDown(IN_WALK) then
-				if data.keydown1 and (not data.keydown2) then
-					if self.Owner.linked_tardis==e then
-						self.Owner.linked_tardis=NULL
-						net.Start("Sonic-SetLinkedTARDIS")
-							net.WriteEntity(NULL)
-						net.Send(self.Owner)
-						self.Owner:ChatPrint("TARDIS unlinked.")
-					elseif e.owner==self.Owner or (self.Owner:IsAdmin() or self.Owner:IsSuperAdmin()) then
-						self.Owner.linked_tardis=e
-						net.Start("Sonic-SetLinkedTARDIS")
-							net.WriteEntity(e)
-						net.Send(self.Owner)
-						self.Owner:ChatPrint("TARDIS linked.")
-					else
-						self.Owner:ChatPrint("You may only link a TARDIS you spawned.")
-					end
+			if self.Owner:KeyDown(IN_WALK) and data.keydown1 and (not data.keydown2) then
+				if self.Owner.linked_tardis==e then
+					self.Owner.linked_tardis=NULL
+					net.Start("Sonic-SetLinkedTARDIS")
+						net.WriteEntity(NULL)
+					net.Send(self.Owner)
+					self.Owner:ChatPrint("TARDIS unlinked.")
+				elseif e.owner==self.Owner or (self.Owner:IsAdmin() or self.Owner:IsSuperAdmin()) then
+					self.Owner.linked_tardis=e
+					net.Start("Sonic-SetLinkedTARDIS")
+						net.WriteEntity(e)
+					net.Send(self.Owner)
+					self.Owner:ChatPrint("TARDIS linked.")
+				else
+					self.Owner:ChatPrint("You may only link a TARDIS you spawned.")
 				end
 			elseif IsLegacy(e) then
-				if data.keydown1 and not data.keydown2 then
+				if data.keydown1 and (not data.keydown2) then
 					local success=e:ToggleLocked()
 					if success then
 						if e.locked then
@@ -121,7 +119,7 @@ if SERVER then
 							self.Owner:ChatPrint("TARDIS unlocked.")
 						end
 					end
-				elseif data.keydown2 and not data.keydown1 then
+				elseif IsLegacy(e) and data.keydown2 and (not data.keydown1) then
 					local success=e:TogglePhase()
 					if success then
 						if e.visible then
@@ -131,6 +129,16 @@ if SERVER then
 						end
 					end
 				end
+			elseif not IsLegacy(e) and (not data.keydown1) and data.keydown2 then
+				e:ToggleLocked(function(success)
+					if success then
+						if e:GetData("locked") then
+							self.Owner:ChatPrint("TARDIS locked.")
+						else
+							self.Owner:ChatPrint("TARDIS unlocked.")
+						end
+					end
+				end)
 			end
 		end
 	end)
