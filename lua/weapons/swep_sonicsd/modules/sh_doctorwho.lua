@@ -45,8 +45,17 @@ if SERVER then
 	end)
 	
 	SWEP:AddFunction(function(self,data)
-		if data.ent.TardisExterior and (not self.Owner:KeyDown(IN_WALK)) then
-			data.ent:ToggleDoor()
+		if data.ent.TardisExterior and (not self.Owner:KeyDown(IN_WALK)) and data.keydown1 and (not data.keydown2) then
+			local open = data.ent:DoorOpen()
+			data.ent:ToggleDoor(function(state)
+				if open==state then
+					if data.ent:GetData("locked") then
+						self.Owner:ChatPrint("Failed to toggle door, this TARDIS is locked.")
+					else
+						self.Owner:ChatPrint("Failed to toggle door.")
+					end
+				end
+			end)
 		end
 	end)
 
