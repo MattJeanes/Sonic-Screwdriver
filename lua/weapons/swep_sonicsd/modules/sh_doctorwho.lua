@@ -164,7 +164,8 @@ if SERVER then
 				self.Owner.tardis_vec=nil
 				self.Owner.tardis_ang=nil
 				local tardis=self.Owner.linked_tardis
-				if IsValid(tardis) and IsLegacy(tardis) and tardis.invortex then
+				local success = false
+				if IsValid(tardis) and ((IsLegacy(tardis) and tardis.invortex) or ((not IsLegacy(tardis)) and tardis:GetData("vortex"))) then
 					tardis:SetDestination(tardis:GetPos(),tardis:GetAngles())
 				end
 				self.Owner:ChatPrint("TARDIS destination unset.")
@@ -174,7 +175,8 @@ if SERVER then
 				ang:RotateAroundAxis( ang:Right( ), -90 )
 				self.Owner.tardis_ang=ang
 				local tardis=self.Owner.linked_tardis
-				if IsValid(tardis) and IsLegacy(tardis) and tardis.invortex then
+				local success = false
+				if IsValid(tardis) and ((IsLegacy(tardis) and tardis.invortex) or ((not IsLegacy(tardis)) and tardis:GetData("vortex"))) then
 					tardis:SetDestination(data.trace.HitPos,ang)
 				end
 				self.Owner:ChatPrint("TARDIS destination set.")
