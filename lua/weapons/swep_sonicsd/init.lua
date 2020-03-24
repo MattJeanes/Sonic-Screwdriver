@@ -10,7 +10,7 @@ SWEP.WaitTime = 0.5
 util.AddNetworkString("SonicSD-Initialize")
 
 function SWEP:Initialize()
-	self:SetWeaponHoldType( self.HoldType )
+	self:SetHoldType( self.HoldType )
 	self.done=nil
 	self.wait=nil
 	self.ent=nil

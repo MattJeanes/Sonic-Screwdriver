@@ -7,7 +7,7 @@ SWEP.DrawAmmo           = false
 SWEP.DrawCrosshair      = true
 
 function SWEP:Initialize()
-	self:SetWeaponHoldType( self.HoldType )
+	self:SetHoldType( self.HoldType )
 	net.Start("SonicSD-Initialize")
 		net.WriteEntity(self)
 	net.SendToServer()
