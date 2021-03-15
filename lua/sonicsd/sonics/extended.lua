@@ -12,6 +12,5 @@ SonicSD:AddSonic({
 	Name="1968",
 	ViewModel="models/doctor_who/sonic_screwdriver/c_4thsonicsd.mdl",
 	WorldModel="models/doctor_who/sonic_screwdriver/w_4thsonicsd.mdl",
-	LightPos=Vector(20,-2.1,-2.3),
-	LightBrightness=5
+	LightDisabled = true
 })

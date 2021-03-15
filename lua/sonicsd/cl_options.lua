@@ -14,6 +14,16 @@ CreateClientConVar("sonic_light_r", "0", true)
 CreateClientConVar("sonic_light_g", "255", true)
 CreateClientConVar("sonic_light_b", "0", true)
 CreateClientConVar("sonic_model", "0", true, true)
+cvars.AddChangeCallback("sonic_model", function(convar_name, old, selected)
+	net.Start("SonicSD-Update")
+		net.WriteString(selected)
+	net.SendToServer()
+	local weapon = LocalPlayer():GetWeapon("swep_sonicsd")
+	if IsValid(weapon) then
+		weapon:SetSonicID(selected)
+		weapon:CallHook("SonicChanged", sonic)
+	end
+end)
 
 hook.Add("PopulateToolMenu", "SonicSD-PopulateToolMenu", function()
 	spawnmenu.AddToolMenuOption("Options", "Doctor Who", "Sonic_Options", "Sonic Screwdriver", "", "", function(panel)

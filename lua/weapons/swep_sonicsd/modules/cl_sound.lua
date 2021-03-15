@@ -6,6 +6,10 @@ SWEP:AddHook("Initialize", "sound", function(self)
 	self.sound=CreateSound(self,self:GetSonic().SoundLoop)
 end)
 
+SWEP:AddHook("SonicChanged", "sound", function(self)
+	self.sound=CreateSound(self,self:GetSonic().SoundLoop)
+end)
+
 SWEP:AddHook("OnRemove", "sound", function(self)
 	if self.sound then self.sound:Stop() end
 end)

@@ -6,9 +6,10 @@ SWEP:AddHook("Initialize", "light", function(self)
 end)
 
 SWEP:AddHook("PreDrawViewModel", "light", function(self,vm,ply,wep,keydown1,keydown2)
+	local sonic=self:GetSonic()
+	if sonic.LightDisabled then return end
 	local cureffect=0
 	if (keydown1 or keydown2) then
-		local sonic=self:GetSonic()
 		local r,g,b=GetConVarNumber("sonic_light_r"),GetConVarNumber("sonic_light_g"),GetConVarNumber("sonic_light_b")
 		if tobool(GetConVarNumber("sonic_light")) and CurTime()>cureffect then
 			cureffect=CurTime()+0.05

@@ -8,6 +8,7 @@ SWEP.AutoSwitchFrom = false
 SWEP.WaitTime = 0.5
 
 util.AddNetworkString("SonicSD-Initialize")
+util.AddNetworkString("SonicSD-Update")
 
 function SWEP:Initialize()
 	self:SetHoldType( self.HoldType )
@@ -67,6 +68,21 @@ net.Receive("SonicSD-Initialize",function(len,ply)
 			sonic:InitClient(ply)
 		else
 			table.insert(sonic._initqueue,ply)
+		end
+	end
+end)
+
+net.Receive("SonicSD-Update",function(len,ply)
+	local selected = net.ReadString()
+	local weapon = ply:GetWeapon("swep_sonicsd")
+	if IsValid(weapon) then
+		local sonic=weapon:GetSonic()
+		if sonic then
+			weapon:SetSonicID(selected)
+			weapon.ViewModel=sonic.ViewModel
+			weapon.WorldModel=sonic.WorldModel
+			weapon:SetModel(weapon.WorldModel)
+			weapon:CallHook("SonicChanged", sonic)
 		end
 	end
 end)
