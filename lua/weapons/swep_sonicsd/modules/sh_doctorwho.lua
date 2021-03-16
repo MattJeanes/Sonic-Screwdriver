@@ -109,7 +109,7 @@ if SERVER then
 						net.WriteEntity(NULL)
 					net.Send(self.Owner)
 					self.Owner:ChatPrint("TARDIS unlinked.")
-				elseif e.owner==self.Owner or (self.Owner:IsAdmin() or self.Owner:IsSuperAdmin()) then
+				elseif e.owner==self.Owner or e:GetCreator()==self.Owner or (self.Owner:IsAdmin() or self.Owner:IsSuperAdmin()) then
 					self.Owner.linked_tardis=e
 					net.Start("Sonic-SetLinkedTARDIS")
 						net.WriteEntity(e)
