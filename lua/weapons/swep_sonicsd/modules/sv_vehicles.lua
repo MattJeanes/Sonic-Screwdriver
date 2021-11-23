@@ -2,7 +2,7 @@
 
 SWEP:AddFunction(function(self,data)
 	if data.ent.isWacAircraft and data.hooks.cantool then -- new base
-		data.ent:setEngine(!data.ent.active)
+		data.ent:setEngine(not data.ent.active)
 	elseif (string.find(data.class, "wac_hc_") or string.find(data.class, "wac_pl_")) and not data.ent.isWacAircraft and data.hooks.cantool then -- old base
 		data.ent:SwitchState()
 	end
