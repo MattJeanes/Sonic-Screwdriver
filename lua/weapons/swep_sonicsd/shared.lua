@@ -19,11 +19,32 @@ end
 
 function SWEP:SetSonicID(id)
 	self.sonicid = id
+	local sonic = self:GetSonic()
+	if SERVER then
+		self.ViewModel=sonic.ViewModel
+		self.WorldModel=sonic.WorldModel
+		self:SetModel(self.WorldModel)
+		if IsValid(self.Owner) then
+			net.Start("SonicSD-Update")
+				net.WriteString(id)
+			net.Send(self.Owner)
+		end
+	end
+	self:CallHook("SonicChanged")
 end
 
 function SWEP:GetSonic()
 	return SonicSD.sonics[self:GetSonicID()] or SonicSD.sonics.default
 end
+
+net.Receive("SonicSD-Update",function(len,ply)
+	local selected = net.ReadString()
+	if CLIENT then ply = LocalPlayer() end
+	local weapon = ply:GetWeapon("swep_sonicsd")
+	if IsValid(weapon) then
+		weapon:SetSonicID(selected)
+	end
+end)
 
 -- Weapon Details
 SWEP.Primary.Clipsize = -1

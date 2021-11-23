@@ -10,40 +10,37 @@ function SonicSD:AddSonic(t)
 		self.sonics[t.ID]=t
 	end
 
-	local weap = {}
-
-	weap.Category = "Doctor Who"
-	weap.PrintName = t.Name
-	if file.Exists("materials/vgui/weapons/sonic/"..t.ID..".vtf", "GAME")
-	then
-		weap.IconOverride="vgui/weapons/sonic/"..t.ID..".vtf"
+	local wep = {}
+	wep.Category = "Doctor Who"
+	wep.PrintName = "Sonic Screwdriver ("..t.Name..")"
+	wep.ClassName = t.ID
+	if file.Exists("materials/vgui/weapons/sonic/"..t.ID..".vtf", "GAME") then
+		wep.IconOverride="vgui/weapons/sonic/"..t.ID..".vtf"
 	else
-		weap.IconOverride="vgui/weapons/sonic/"..t.ID..".png"
+		wep.IconOverride="vgui/weapons/sonic/"..t.ID..".png"
 	end
-	weap.ScriptedEntityType = "sonic_screwdriver"
-	list.Set("Weapon", t.ID, weap)
-	print("ADDED SONIC SWEP "..t.ID)
-
+	wep.ScriptedEntityType = "sonicsd"
+	wep.Spawnable = true
+	list.Set("Weapon", "sonicsd-"..t.ID, wep)
 end
 
 
-hook.Add("PostGamemodeLoaded", "sonic-skins", function()
+hook.Add("PostGamemodeLoaded", "sonicsd", function()
 	if not spawnmenu then return end
-	spawnmenu.AddContentType("sonic_screwdriver", function(container, obj)
-		--if not obj.material then return end
-		--if not obj.nicename then return end
-		--if not obj.spawnname then return end
-		print("ADDED CONTENT TYPE")
+	spawnmenu.AddContentType("sonicsd", function(container, obj)
+		if not obj.material then return end
+		if not obj.nicename then return end
+		if not obj.spawnname then return end
 
 		local icon = vgui.Create("ContentIcon", container)
 		icon:SetContentType("weapon")
-		--icon:SetSpawnName(obj.spawnname)
+		icon:SetSpawnName(obj.spawnname)
 		icon:SetName(obj.nicename)
 		icon:SetMaterial(obj.material)
 		icon:SetAdminOnly(obj.admin)
 		icon:SetColor(Color(205, 92, 92, 255))
 		icon.DoClick = function()
-			--RunConsoleCommand("tardis2_spawn", obj.spawnname)
+			RunConsoleCommand("sonicsd_give", obj.spawnname)
 			surface.PlaySound("ui/buttonclickrelease.wav")
 		end
 
@@ -55,5 +52,36 @@ hook.Add("PostGamemodeLoaded", "sonic-skins", function()
 	end)
 end)
 
+if SERVER then
+	function SonicSD:GiveSonic(ply, command, args)
+		local sonicID = args[1]
+		if not IsValid(ply) then return end
+		if sonicID == nil then return end
+		if not ply:Alive() then return end
+
+		local weaponName = "swep_sonicsd"
+
+		local swep = list.Get("Weapon")[weaponName]
+		if ( swep == nil ) then return end
+
+		if ((not swep.Spawnable) and (not ply:IsAdmin())) or (swep.AdminOnly and (not ply:IsAdmin())) then
+			return
+		end
+
+		if not gamemode.Call("PlayerGiveSWEP", ply, weaponName, swep) then return end
+
+		if not ply:HasWeapon(weaponName) then
+			MsgAll("Giving " .. ply:Nick() .. " a " .. weaponName .. " (" .. sonicID .. ")\n")
+			ply:Give(weaponName)
+		end
+
+		local sonic = ply:GetWeapon(weaponName)
+		sonic:SetSonicID(sonicID)
+		ply:SelectWeapon(weaponName)
+	end
+	concommand.Add("sonicsd_give", function(ply, command, args)
+		SonicSD:GiveSonic(ply, command, args)
+	end)
+end
 
 SonicSD:LoadFolder("sonics",false,true)
