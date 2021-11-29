@@ -42,6 +42,7 @@ hook.Add("PostGamemodeLoaded", "sonicsd", function()
 		icon:SetAdminOnly(obj.admin)
 		icon:SetColor(Color(205, 92, 92, 255))
 		icon.DoClick = function()
+			RunConsoleCommand("sonic_model", obj.spawnname)
 			RunConsoleCommand("sonicsd_give", obj.spawnname)
 			surface.PlaySound("ui/buttonclickrelease.wav")
 		end
