@@ -16,8 +16,10 @@ function SonicSD:AddSonic(t)
 	wep.ClassName = t.ID
 	if file.Exists("materials/vgui/weapons/sonic/"..t.ID..".vtf", "GAME") then
 		wep.IconOverride="vgui/weapons/sonic/"..t.ID..".vtf"
-	else
+	elseif file.Exists("materials/vgui/weapons/sonic/"..t.ID..".png", "GAME") then
 		wep.IconOverride="vgui/weapons/sonic/"..t.ID..".png"
+	else
+		wep.IconOverride="vgui/weapons/sonic/default/"..t.ID..".png"
 	end
 	wep.ScriptedEntityType = "sonicsd"
 	wep.Spawnable = true
