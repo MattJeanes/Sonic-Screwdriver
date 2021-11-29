@@ -11,8 +11,8 @@ function SonicSD:AddSonic(t)
 	end
 
 	local wep = {}
-	wep.Category = "Doctor Who"
-	wep.PrintName = "Sonic Screwdriver ("..t.Name..")"
+	wep.Category = "Doctor Who - Sonic Tools"
+	wep.PrintName = t.Name
 	wep.ClassName = t.ID
 	if file.Exists("materials/vgui/weapons/sonic/"..t.ID..".vtf", "GAME") then
 		wep.IconOverride="vgui/weapons/sonic/"..t.ID..".vtf"
