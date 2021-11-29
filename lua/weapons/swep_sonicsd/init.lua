@@ -74,10 +74,8 @@ end)
 
 function SWEP:FirstThink()
 	-- Owner only exists now, not in init unfortunately
-	if not self:GetSonicID() then 
-		local id=self.Owner:GetInfo("sonic_model","default")
-		self:SetSonicID(id)
-	end
+	local id=self.Owner:GetInfo("sonic_model","default")
+	self:SetSonicID(id)
 	
 	self._ready = true
 	self:CallHook("Initialize")

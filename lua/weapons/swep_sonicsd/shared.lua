@@ -41,7 +41,7 @@ net.Receive("SonicSD-Update",function(len,ply)
 	local selected = net.ReadString()
 	if CLIENT then ply = LocalPlayer() end
 	local weapon = ply:GetWeapon("swep_sonicsd")
-	if IsValid(weapon) and (SERVER or weapon._ready) then
+	if IsValid(weapon) then
 		weapon:SetSonicID(selected)
 	end
 end)

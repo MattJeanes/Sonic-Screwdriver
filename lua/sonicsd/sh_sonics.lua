@@ -72,17 +72,13 @@ if SERVER then
 
 		if not gamemode.Call("PlayerGiveSWEP", ply, weaponName, swep) then return end
 
-		if ply:HasWeapon(weaponName) then
-			local sonic = ply:GetWeapon(weaponName)
-			sonic:SetSonicID(sonicID)
-		else
+		if not ply:HasWeapon(weaponName) then
 			MsgAll("Giving " .. ply:Nick() .. " a " .. weaponName .. " (" .. sonicID .. ")\n")
-			local sonic = ents.Create(weaponName)
-			sonic:SetSonicID(sonicID)
-			sonic:Spawn()
-			ply:PickupWeapon(sonic)
+			ply:Give(weaponName)
 		end
 
+		local sonic = ply:GetWeapon(weaponName)
+		sonic:SetSonicID(sonicID)
 		ply:SelectWeapon(weaponName)
 	end
 	concommand.Add("sonicsd_give", function(ply, command, args)
