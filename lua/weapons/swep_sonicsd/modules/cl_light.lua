@@ -46,3 +46,14 @@ SWEP:AddHook("PreDrawViewModel", "light", function(self,vm,ply,wep,keydown1,keyd
 		end
 	end
 end)
+
+SWEP:AddHook("SonicChanged", "default-color", function(self)
+	if GetConVar("sonic_should_set_default_colors"):GetBool() then
+		local son = self:GetSonic()
+		if son ~= nil and self:GetSonic().DefaultLightColor ~= nil then
+			GetConVar("sonic_light_r"):SetInt(son.DefaultLightColor.r)
+			GetConVar("sonic_light_g"):SetInt(son.DefaultLightColor.g)
+			GetConVar("sonic_light_b"):SetInt(son.DefaultLightColor.b)
+		end
+	end
+end)

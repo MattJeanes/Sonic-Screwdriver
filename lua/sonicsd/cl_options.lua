@@ -4,6 +4,7 @@ local checkbox_options={
 	{"Sound", "sonic_sound"},
 	{"Particle light", "sonic_light"},
 	{"Dynamic light", "sonic_dynamiclight"},
+	{"Enable default colors for each sonic", "sonic_should_set_default_colors"},
 }
 
 for k,v in pairs(checkbox_options) do
