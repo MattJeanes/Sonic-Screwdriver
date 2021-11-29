@@ -4,7 +4,8 @@ SonicSD:AddSonic({
 	ViewModel="models/doctor_who/sonic_screwdriver/c_10thsonicsd.mdl",
 	WorldModel="models/doctor_who/sonic_screwdriver/w_10thsonicsd.mdl",
 	LightPos=Vector(20,-2.5,-3.15),
-	LightBrightness=2
+	LightBrightness=2,
+	DefaultLightColor = Color(0, 180, 200)
 })
 
 SonicSD:AddSonic({
