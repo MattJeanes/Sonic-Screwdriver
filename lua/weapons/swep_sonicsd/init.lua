@@ -72,21 +72,6 @@ net.Receive("SonicSD-Initialize",function(len,ply)
 	end
 end)
 
-net.Receive("SonicSD-Update",function(len,ply)
-	local selected = net.ReadString()
-	local weapon = ply:GetWeapon("swep_sonicsd")
-	if IsValid(weapon) then
-		local sonic=weapon:GetSonic()
-		if sonic then
-			weapon:SetSonicID(selected)
-			weapon.ViewModel=sonic.ViewModel
-			weapon.WorldModel=sonic.WorldModel
-			weapon:SetModel(weapon.WorldModel)
-			weapon:CallHook("SonicChanged", sonic)
-		end
-	end
-end)
-
 function SWEP:FirstThink()
 	-- Owner only exists now, not in init unfortunately
 	local id=self.Owner:GetInfo("sonic_model","default")

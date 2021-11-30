@@ -21,7 +21,7 @@ cvars.AddChangeCallback("sonic_model", function(convar_name, old, selected)
 	local weapon = LocalPlayer():GetWeapon("swep_sonicsd")
 	if IsValid(weapon) then
 		weapon:SetSonicID(selected)
-		weapon:CallHook("SonicChanged", sonic)
+		weapon:CallHook("SonicChanged")
 	end
 end)
 
