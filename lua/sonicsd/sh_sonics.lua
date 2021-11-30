@@ -11,7 +11,8 @@ function SonicSD:AddSonic(t)
 	end
 
 	local wep = {}
-	wep.Category = "Doctor Who - Sonic Tools"
+	wep.Category = DEBUG_SONICSD_SPAWNMENU_CATEGORY_OVERRIDE or "Doctor Who - Sonic Tools"
+
 	wep.PrintName = t.Name
 	wep.ClassName = t.ID
 	if file.Exists("materials/vgui/weapons/sonic/"..t.ID..".vtf", "GAME") then
