@@ -5,9 +5,10 @@ SWEP.Author             = "Dr. Matt"
 SWEP.Contact            = "mattjeanes23@gmail.com"
 SWEP.Purpose            = "Opening doors"
 SWEP.Instructions       = "Point and press"
-SWEP.Category			= "Doctor Who - Sonic Tools"
 ------------------------------------------------
- 
+
+SWEP.Category = DEBUG_SONICSD_SPAWNMENU_CATEGORY_OVERRIDE or "Doctor Who - Sonic Tools"
+
 SWEP.Spawnable = true
 SWEP.AdminSpawnable = true
 

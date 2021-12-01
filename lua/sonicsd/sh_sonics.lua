@@ -4,6 +4,7 @@ SonicSD.sonics={}
 function SonicSD:AddSonic(t)
 	local base = table.Copy(self.sonics[t.Base] or self.sonics.default)
 	if base then
+		base.DefaultLightColor = nil -- not to be inherited
 		table.Merge(base,t)
 		self.sonics[t.ID]=base
 	else
@@ -11,7 +12,8 @@ function SonicSD:AddSonic(t)
 	end
 
 	local wep = {}
-	wep.Category = "Doctor Who - Sonic Tools"
+	wep.Category = DEBUG_SONICSD_SPAWNMENU_CATEGORY_OVERRIDE or "Doctor Who - Sonic Tools"
+
 	wep.PrintName = t.Name
 	wep.ClassName = t.ID
 	if file.Exists("materials/vgui/weapons/sonic/"..t.ID..".vtf", "GAME") then
