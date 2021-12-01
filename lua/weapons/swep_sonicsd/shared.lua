@@ -1,13 +1,14 @@
-//----------------------------------------------
-//Author Info
-//----------------------------------------------
+------------------------------------------------
+--Author Info
+------------------------------------------------
 SWEP.Author             = "Dr. Matt"
 SWEP.Contact            = "mattjeanes23@gmail.com"
 SWEP.Purpose            = "Opening doors"
 SWEP.Instructions       = "Point and press"
-SWEP.Category			= "Doctor Who"
-//----------------------------------------------
- 
+------------------------------------------------
+
+SWEP.Category = DEBUG_SONICSD_SPAWNMENU_CATEGORY_OVERRIDE or "Doctor Who - Sonic Tools"
+
 SWEP.Spawnable = true
 SWEP.AdminSpawnable = true
 
@@ -19,13 +20,34 @@ end
 
 function SWEP:SetSonicID(id)
 	self.sonicid = id
+	local sonic = self:GetSonic()
+	if SERVER then
+		self.ViewModel=sonic.ViewModel
+		self.WorldModel=sonic.WorldModel
+		self:SetModel(self.WorldModel)
+		if IsValid(self.Owner) then
+			net.Start("SonicSD-Update")
+				net.WriteString(id)
+			net.Send(self.Owner)
+		end
+	end
+	self:CallHook("SonicChanged")
 end
 
 function SWEP:GetSonic()
 	return SonicSD.sonics[self:GetSonicID()] or SonicSD.sonics.default
 end
 
-// Weapon Details
+net.Receive("SonicSD-Update",function(len,ply)
+	local selected = net.ReadString()
+	if CLIENT then ply = LocalPlayer() end
+	local weapon = ply:GetWeapon("swep_sonicsd")
+	if IsValid(weapon) and weapon._ready then
+		weapon:SetSonicID(selected)
+	end
+end)
+
+-- Weapon Details
 SWEP.Primary.Clipsize = -1
 SWEP.Primary.DefaultClip = -1
 SWEP.Primary.Automatic = false
@@ -61,7 +83,7 @@ function SWEP:CallHook(name,...)
 	local a,b,c,d,e,f
 	for k,v in pairs(self.hooks[name]) do
 		a,b,c,d,e,f = v(self,...)
-		if ( a != nil ) then
+		if ( a ~= nil ) then
 			return a,b,c,d,e,f
 		end
 	end
@@ -101,14 +123,14 @@ function SWEP:OnRestore()
 	self:Initialize()
 end 
  
-//--------------------------------------------
-// Called when the player Shoots
-//--------------------------------------------
+----------------------------------------------
+-- Called when the player Shoots
+----------------------------------------------
 function SWEP:PrimaryAttack()
 end
  
-//--------------------------------------------
-// Called when the player Uses secondary attack
-//--------------------------------------------
+----------------------------------------------
+-- Called when the player Uses secondary attack
+----------------------------------------------
 function SWEP:SecondaryAttack() 
 end
