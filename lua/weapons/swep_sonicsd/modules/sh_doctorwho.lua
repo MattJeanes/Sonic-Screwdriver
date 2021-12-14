@@ -61,9 +61,9 @@ if SERVER then
 			local open = data.ent:DoorOpen()
 			if not data.ent:ToggleDoor() then
 				if data.ent:GetData("locked") then
-					TARDIS_MSG(self.Owner, data.ent, "Failed to toggle door, this TARDIS is locked.")
+					TARDIS_MSG(self.Owner, data.ent, "Failed to toggle door, this TARDIS is locked.", true)
 				else
-					TARDIS_MSG(self.Owner, data.ent, "Failed to toggle door.")
+					TARDIS_MSG(self.Owner, data.ent, "Failed to toggle door.", true)
 				end
 			end
 		end
