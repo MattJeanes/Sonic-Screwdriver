@@ -4,14 +4,14 @@ local function IsLegacy(ent)
 	return not ent.TardisExterior
 end
 
-local function TARDIS_MSG(self, tardis, msg, error)
+local function TARDIS_MSG(ply, tardis, msg, error)
 	if IsLegacy(tardis) then
-		self.Owner:ChatPrint(msg)
+		ply:ChatPrint(msg)
 	else
 		if error then
-			TARDIS:ErrorMessage(self.Owner, msg)
+			TARDIS:ErrorMessage(ply, msg)
 		else
-			TARDIS:Message(self.Owner, msg)
+			TARDIS:Message(ply, msg)
 		end
 	end
 end
