@@ -59,15 +59,13 @@ if SERVER then
 	SWEP:AddFunction(function(self,data)
 		if data.ent.TardisExterior and (not self.Owner:KeyDown(IN_WALK)) and data.keydown1 and (not data.keydown2) then
 			local open = data.ent:DoorOpen()
-			data.ent:ToggleDoor(function(state)
-				if open==state then
-					if data.ent:GetData("locked") then
-						TARDIS_MSG(self.Owner, data.ent, "Failed to toggle door, this TARDIS is locked.")
-					else
-						TARDIS_MSG(self.Owner, data.ent, "Failed to toggle door.")
-					end
+			if not data.ent:ToggleDoor() then
+				if data.ent:GetData("locked") then
+					TARDIS_MSG(self.Owner, data.ent, "Failed to toggle door, this TARDIS is locked.")
+				else
+					TARDIS_MSG(self.Owner, data.ent, "Failed to toggle door.")
 				end
-			end)
+			end
 		end
 	end)
 
@@ -151,6 +149,13 @@ if SERVER then
 					end
 				end
 			elseif not IsLegacy(e) and (not data.keydown1) and data.keydown2 then
+				if self.Owner ~= e:GetCreator() then
+					TARDIS:ErrorMessage(self.Owner, "This is not your TARDIS")
+					return
+				end
+				if e:DoorOpen() then
+					TARDIS:Message(self.Owner, "Closing the doors...")
+				end
 				e:ToggleLocked(function(success)
 					if success then
 						if e:GetData("locked") then
