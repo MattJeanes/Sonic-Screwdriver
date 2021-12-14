@@ -149,10 +149,6 @@ if SERVER then
 					end
 				end
 			elseif not IsLegacy(e) and (not data.keydown1) and data.keydown2 then
-				if self.Owner ~= e:GetCreator() then
-					TARDIS:ErrorMessage(self.Owner, "This is not your TARDIS")
-					return
-				end
 				if e:DoorOpen() then
 					TARDIS:Message(self.Owner, "Closing the doors...")
 				end
