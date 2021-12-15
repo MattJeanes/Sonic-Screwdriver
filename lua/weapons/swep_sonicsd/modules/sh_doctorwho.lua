@@ -4,6 +4,18 @@ local function IsLegacy(ent)
 	return not ent.TardisExterior
 end
 
+local function TARDIS_MSG(ply, tardis, msg, error)
+	if IsLegacy(tardis) then
+		ply:ChatPrint(msg)
+	else
+		if error then
+			TARDIS:ErrorMessage(ply, msg)
+		else
+			TARDIS:Message(ply, msg)
+		end
+	end
+end
+
 if SERVER then
 	util.AddNetworkString("Sonic-SetLinkedTARDIS")
 
@@ -24,7 +36,7 @@ if SERVER then
 			local vortex = (tardis.invortex or (tardis.GetData and tardis:GetData("vortex",false)))
 			if (not moving) and (not vortex) and self.Owner.tardis_vec and self.Owner.tardis_ang then
 				self:MoveTARDIS(self.Owner.linked_tardis)
-				self.Owner:ChatPrint("TARDIS moving to set destination.")
+				TARDIS_MSG(self.Owner, tardis, "TARDIS moving to set destination.")
 			elseif not moving and not vortex and not self.Owner.tardis_vec and not self.Owner.tardis_ang then
 				local trace=util.QuickTrace( self.Owner:GetShootPos(), self.Owner:GetAimVector() * 99999, { self.Owner } )
 				self.Owner.tardis_vec=trace.HitPos
@@ -32,14 +44,14 @@ if SERVER then
 				ang:RotateAroundAxis( ang:Right(), -90 )
 				self.Owner.tardis_ang=ang
 				self:MoveTARDIS(tardis)
-				self.Owner:ChatPrint("TARDIS moving to AimPos.")
+				TARDIS_MSG(self.Owner, tardis, "TARDIS moving to AimPos.")
 			elseif ((IsLegacy(tardis) and tardis.longflight) or (not IsLegacy(tardis))) and vortex then
 				if IsLegacy(tardis) then
 					self.Owner.linked_tardis:LongReappear()
 				else
 					self.Owner.linked_tardis:Mat()
 				end
-				self.Owner:ChatPrint("TARDIS materialising.")
+				TARDIS_MSG(self.Owner, tardis, "TARDIS materialising.")
 			end
 		end
 	end)
@@ -47,15 +59,13 @@ if SERVER then
 	SWEP:AddFunction(function(self,data)
 		if data.ent.TardisExterior and (not self.Owner:KeyDown(IN_WALK)) and data.keydown1 and (not data.keydown2) then
 			local open = data.ent:DoorOpen()
-			data.ent:ToggleDoor(function(state)
-				if open==state then
-					if data.ent:GetData("locked") then
-						self.Owner:ChatPrint("Failed to toggle door, this TARDIS is locked.")
-					else
-						self.Owner:ChatPrint("Failed to toggle door.")
-					end
+			if not data.ent:ToggleDoor() then
+				if data.ent:GetData("locked") then
+					TARDIS_MSG(self.Owner, data.ent, "Failed to toggle door, this TARDIS is locked.", true)
+				else
+					TARDIS_MSG(self.Owner, data.ent, "Failed to toggle door.", true)
 				end
-			end)
+			end
 		end
 	end)
 
@@ -108,15 +118,15 @@ if SERVER then
 					net.Start("Sonic-SetLinkedTARDIS")
 						net.WriteEntity(NULL)
 					net.Send(self.Owner)
-					self.Owner:ChatPrint("TARDIS unlinked.")
+					TARDIS_MSG(self.Owner, e, "TARDIS unlinked.")
 				elseif e.owner==self.Owner or e:GetCreator()==self.Owner or (self.Owner:IsAdmin() or self.Owner:IsSuperAdmin()) then
 					self.Owner.linked_tardis=e
 					net.Start("Sonic-SetLinkedTARDIS")
 						net.WriteEntity(e)
 					net.Send(self.Owner)
-					self.Owner:ChatPrint("TARDIS linked.")
+					TARDIS_MSG(self.Owner, e, "TARDIS linked.")
 				else
-					self.Owner:ChatPrint("You may only link a TARDIS you spawned.")
+					TARDIS_MSG(self.Owner, e, "You may only link a TARDIS you spawned.", true)
 				end
 			elseif IsLegacy(e) then
 				if data.keydown1 and (not data.keydown2) then
@@ -139,12 +149,19 @@ if SERVER then
 					end
 				end
 			elseif not IsLegacy(e) and (not data.keydown1) and data.keydown2 then
+				if self.Owner ~= e:GetCreator() and e.interior:GetSecurity() then
+					TARDIS:ErrorMessage(self.Owner, "This is not your TARDIS")
+					return
+				end
+				if e:DoorOpen() then
+					TARDIS:Message(self.Owner, "Closing the doors...")
+				end
 				e:ToggleLocked(function(success)
 					if success then
 						if e:GetData("locked") then
-							self.Owner:ChatPrint("TARDIS locked.")
+							TARDIS:Message(self.Owner, "TARDIS locked.")
 						else
-							self.Owner:ChatPrint("TARDIS unlocked.")
+							TARDIS:Message(self.Owner, "TARDIS unlocked.")
 						end
 					end
 				end)
@@ -160,26 +177,25 @@ if SERVER then
 
 	SWEP:AddFunction(function(self,data)
 		if data.class=="worldspawn" and data.ent:IsWorld() and self.Owner.linked_tardis then
+			local tardis=self.Owner.linked_tardis
 			if self.Owner:KeyDown(IN_WALK) then
 				self.Owner.tardis_vec=nil
 				self.Owner.tardis_ang=nil
-				local tardis=self.Owner.linked_tardis
 				local success = false
 				if IsValid(tardis) and ((IsLegacy(tardis) and tardis.invortex) or ((not IsLegacy(tardis)) and tardis:GetData("vortex"))) then
 					tardis:SetDestination(tardis:GetPos(),tardis:GetAngles())
 				end
-				self.Owner:ChatPrint("TARDIS destination unset.")
+				TARDIS_MSG(self.Owner, tardis, "TARDIS destination unset.")
 			else
 				self.Owner.tardis_vec=data.trace.HitPos
 				local ang=data.trace.HitNormal:Angle()
 				ang:RotateAroundAxis( ang:Right( ), -90 )
 				self.Owner.tardis_ang=ang
-				local tardis=self.Owner.linked_tardis
 				local success = false
 				if IsValid(tardis) and ((IsLegacy(tardis) and tardis.invortex) or ((not IsLegacy(tardis)) and tardis:GetData("vortex"))) then
 					tardis:SetDestination(data.trace.HitPos,ang)
 				end
-				self.Owner:ChatPrint("TARDIS destination set.")
+				TARDIS_MSG(self.Owner, tardis, "TARDIS destination set.")
 			end
 		end
 	end)
