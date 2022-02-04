@@ -15,11 +15,12 @@ SWEP:AddFunction(function(self,data)
         local savetable = data.ent:GetSaveTable()
         local open=(not tobool(savetable.m_toggle_state))
         local locked=tobool(savetable.m_bLocked)
-        if locked and data.keydown2 and data.hooks.cantool then
+        print(locked)
+        if locked and data.keydown2 and (DarkRP or data.hooks.cantool) then
             data.ent:Fire("Unlock", 0)
             data.ent:EmitSound("doors/door_latch3.wav")
             self.Owner:ChatPrint("Door unlocked.")
-        elseif not locked and data.keydown2 and data.hooks.cantool then
+        elseif not locked and data.keydown2 and (DarkRP or data.hooks.cantool) then
             data.ent:Fire("Lock", 0)
             data.ent:EmitSound("doors/door_latch3.wav")
             self.Owner:ChatPrint("Door locked.")
