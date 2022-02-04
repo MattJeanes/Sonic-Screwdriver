@@ -15,7 +15,6 @@ SWEP:AddFunction(function(self,data)
         local savetable = data.ent:GetSaveTable()
         local open=(not tobool(savetable.m_toggle_state))
         local locked=tobool(savetable.m_bLocked)
-        print(locked)
         if locked and data.keydown2 and (DarkRP or data.hooks.cantool) then
             data.ent:Fire("Unlock", 0)
             data.ent:EmitSound("doors/door_latch3.wav")
