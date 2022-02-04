@@ -10,7 +10,16 @@ SWEP:AddFunction(function(self,data)
     if (data.class=="prop_physics" or data.class=="prop_physics_multiplayer") and data.hooks.canmove then
         local phys=data.ent:GetPhysicsObject()
         if IsValid(phys) then
-            phys:AddVelocity(self.Owner:GetAimVector()*200)
+            local multiplier
+            if data.keydown1 then
+                multiplier = 200
+            elseif data.keydown2 then
+                multiplier = -200
+            end
+
+            if multiplier ~= nil then
+                phys:AddVelocity(self.Owner:GetAimVector()*multiplier)
+            end
         end
         if (data.ent:GetSaveTable().max_health > 1) and data.hooks.cantool then
             data.ent:Fire("Break", 0)
