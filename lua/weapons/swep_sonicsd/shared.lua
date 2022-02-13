@@ -9,8 +9,8 @@ SWEP.Instructions       = "Point and press"
 
 SWEP.Category = DEBUG_SONICSD_SPAWNMENU_CATEGORY_OVERRIDE or "Doctor Who - Sonic Tools"
 
-SWEP.Spawnable = true
-SWEP.AdminSpawnable = true
+SWEP.Spawnable = false
+SWEP.AdminSpawnable = false
 
 SWEP.UseHands = true
 
