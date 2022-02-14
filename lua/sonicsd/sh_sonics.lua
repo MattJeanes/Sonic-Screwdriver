@@ -1,5 +1,43 @@
 -- Sonics
 
+SonicSD_OVERRIDES = SonicSD_OVERRIDES or {}
+
+local favorites
+
+local filename = "sonicsd_favorites.txt"
+if file.Exists(filename, "DATA") then
+    favorites = SonicSD.von.deserialize(file.Read(filename, "DATA"))
+else
+    favorites = {}
+end
+
+function SonicSD:UpdateFavoritesFile()
+    file.Write(filename, SonicSD.von.serialize(favorites))
+end
+
+function SonicSD:AddFavorite(id)
+    favorites[id] = true
+    self:UpdateFavoritesFile()
+end
+
+function SonicSD:IsFavorite(id)
+    return favorites[id]
+end
+
+function SonicSD:RemoveFavorite(id)
+    favorites[id] = nil
+    self:UpdateFavoritesFile()
+end
+
+function SonicSD:ToggleFavorite(id)
+    if favorites[id] then
+        self:RemoveFavorite(id)
+    else
+        self:AddFavorite(id)
+    end
+end
+
+
 SonicSD.sonics={}
 function SonicSD:AddSonic(t)
     local base = table.Copy(self.sonics[t.Base] or self.sonics.default)
@@ -12,9 +50,14 @@ function SonicSD:AddSonic(t)
     end
 
     local wep = {}
-    wep.Category = DEBUG_SONICSD_SPAWNMENU_CATEGORY_OVERRIDE or "Doctor Who - Sonic Tools"
+    wep.Category = SonicSD_OVERRIDES.MainCategory or "Doctor Who - Sonic Tools"
 
     wep.PrintName = t.Name
+
+    if CLIENT and SonicSD:IsFavorite(t.ID) then
+        wep.PrintName = "  " .. wep.PrintName .. "  "-- move to the top
+    end
+
     wep.ClassName = t.ID
     if file.Exists("materials/vgui/weapons/sonic/"..t.ID..".vtf", "GAME") then
         wep.IconOverride="vgui/weapons/sonic/"..t.ID..".vtf"
@@ -47,6 +90,24 @@ hook.Add("PostGamemodeLoaded", "sonicsd", function()
             RunConsoleCommand("sonic_model", obj.spawnname)
             RunConsoleCommand("sonicsd_give", obj.spawnname)
             surface.PlaySound("ui/buttonclickrelease.wav")
+        end
+
+        icon.OpenMenu = function(self)
+            local dmenu = DermaMenu()
+
+            local favorite = dmenu:AddOption("Add to favorites (reload required)", function(self)
+                SonicSD:ToggleFavorite(obj.spawnname)
+            end)
+            favorite:SetIcon("icon16/heart_add.png")
+            function favorite:Think()
+                local fav = SonicSD:IsFavorite(obj.spawnname)
+                local fav_icon = fav and "heart_delete.png" or "heart_add.png"
+                local fav_text = fav and "Remove from" or "Add to"
+                self:SetIcon("icon16/" .. fav_icon)
+                self:SetText(fav_text .. " favorites (reload required)")
+            end
+
+            dmenu:Open()
         end
 
         if IsValid(container) then
