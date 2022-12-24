@@ -24,9 +24,9 @@ matproxy.Add(
 
         local mul
         if keydown1 or keydown2 then
-            mul = 1.5 + math.sin( CurTime() * 5 ) * 0.75
+            mul = 4.0 + math.sin( CurTime() * 5 ) * 0.25
         else
-            mul = 0.05
+            mul = 0.7
         end
 
         mat:SetVector( self.ResultTo, col * mul );
