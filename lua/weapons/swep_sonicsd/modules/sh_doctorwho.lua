@@ -164,7 +164,7 @@ if SERVER then
                             TARDIS:Message(self.Owner, "TARDIS unlocked.")
                         end
                     end
-                end)
+                end, true)
             end
         end
     end)
