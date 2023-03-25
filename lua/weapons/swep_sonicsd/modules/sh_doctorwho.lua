@@ -199,6 +199,16 @@ if SERVER then
             end
         end
     end)
+
+    SWEP:AddHook("Hold", "doctorwho", function(self,data)
+        if data.class=="gmod_time_distortion_generator" then
+            if (not self.repairtick) or CurTime() > self.repairtick then
+                self.repairtick = CurTime() + 1
+                print("repairing TDG")
+                -- data.ent:Repair(10)
+            end 
+        end
+    end)
 else
     function SWEP:PointingAt(ent)
         if not IsValid(ent) then return end
