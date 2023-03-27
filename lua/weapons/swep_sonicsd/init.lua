@@ -42,8 +42,9 @@ function SWEP:Go(ent, trace, keydown1, keydown2)
         hooks.cantool=hook.Call("CanTool", GAMEMODE, self.Owner, self.Owner:GetEyeTraceNoCursor(), "")
     end
     local class=ent:GetClass()
+    self.data = {class=class,ent=ent,hooks=hooks,keydown1=keydown1,keydown2=keydown2,trace=trace}
     for k,v in ipairs(self.functions) do
-        v(self,{class=class,ent=ent,hooks=hooks,keydown1=keydown1,keydown2=keydown2,trace=trace})
+        v(self,self.data)
     end
 end
 
@@ -118,12 +119,16 @@ function SWEP:Think()
                     self.done=nil
                     self.wait=nil
                     self.ent=nil
+                    self.data=nil
+                elseif self.done and self.data then
+                    self:CallHook("Hold", self.data)
                 end
             end
         else
             self.done=nil
             self.wait=nil
             self.ent=nil
+            self.data=nil
         end
         
         self:CallHook("Think",keydown1,keydown2)
