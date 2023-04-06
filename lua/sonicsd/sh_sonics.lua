@@ -130,10 +130,6 @@ if SERVER then
         local swep = list.Get("Weapon")[weaponName]
         if ( swep == nil ) then return end
 
-        if ((not swep.Spawnable) and (not ply:IsAdmin())) or (swep.AdminOnly and (not ply:IsAdmin())) then
-            return
-        end
-
         if not gamemode.Call("PlayerGiveSWEP", ply, weaponName, swep) then return end
 
         if not ply:HasWeapon(weaponName) then
