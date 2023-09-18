@@ -19,11 +19,11 @@ end
 if SERVER then
     util.AddNetworkString("Sonic-SetLinkedTARDIS")
 
-    function SWEP:MoveTARDIS(ent)
+    function SWEP:MoveTARDIS(ent, callback)
         if IsLegacy(ent) then
-            ent:Go(self.Owner.tardis_vec, self.Owner.tardis_ang)
+            callback(ent:Go(self.Owner.tardis_vec, self.Owner.tardis_ang))
         else
-            ent:Demat(self.Owner.tardis_vec, self.Owner.tardis_ang)
+            ent:Demat(self.Owner.tardis_vec, self.Owner.tardis_ang, callback)
         end
         self.Owner.tardis_vec=nil
         self.Owner.tardis_ang=nil
@@ -35,16 +35,26 @@ if SERVER then
             local moving = (tardis.moving or (tardis.GetData and tardis:GetData("teleport",false)))
             local vortex = (tardis.invortex or (tardis.GetData and tardis:GetData("vortex",false)))
             if (not moving) and (not vortex) and self.Owner.tardis_vec and self.Owner.tardis_ang then
-                self:MoveTARDIS(self.Owner.linked_tardis)
-                TARDIS_MSG(self.Owner, tardis, "TARDIS moving to set destination.")
+                self:MoveTARDIS(self.Owner.linked_tardis, function(success)
+                    if success then
+                        TARDIS_MSG(self.Owner, tardis, "TARDIS moving to set destination.")
+                    else
+                        TARDIS_MSG(self.Owner, tardis, "Failed to move TARDIS.", true)
+                    end
+                end)
             elseif not moving and not vortex and not self.Owner.tardis_vec and not self.Owner.tardis_ang then
                 local trace=util.QuickTrace( self.Owner:GetShootPos(), self.Owner:GetAimVector() * 99999, { self.Owner } )
                 self.Owner.tardis_vec=trace.HitPos
                 local ang=trace.HitNormal:Angle()
                 ang:RotateAroundAxis( ang:Right(), -90 )
                 self.Owner.tardis_ang=ang
-                self:MoveTARDIS(tardis)
-                TARDIS_MSG(self.Owner, tardis, "TARDIS moving to AimPos.")
+                local success = self:MoveTARDIS(tardis, function(success)
+                    if success then
+                        TARDIS_MSG(self.Owner, tardis, "TARDIS moving to AimPos.")
+                    else
+                        TARDIS_MSG(self.Owner, tardis, "Failed to move TARDIS.", true)
+                    end
+                end)
             elseif ((IsLegacy(tardis) and tardis.longflight) or (not IsLegacy(tardis))) and vortex then
                 if IsLegacy(tardis) then
                     self.Owner.linked_tardis:LongReappear()
