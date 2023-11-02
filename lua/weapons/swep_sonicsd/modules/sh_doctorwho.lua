@@ -80,9 +80,16 @@ if SERVER then
     end)
 
     SWEP:AddFunction(function(self,data)
-        if self.Owner:KeyDown(IN_WALK) and self.Owner.linked_tardis and IsValid(self.Owner.linked_tardis) and IsLegacy(self.Owner.linked_tardis) and data.keydown2 and not data.keydown1 and data.hooks.cantool then
-            self.Owner.linked_tardis:SetTrackingEnt(data.ent)
-            if IsValid(self.Owner.linked_tardis.trackingent) then
+        if self.Owner:KeyDown(IN_WALK) and self.Owner.linked_tardis and IsValid(self.Owner.linked_tardis) and data.keydown2 and not data.keydown1 and data.hooks.cantool then
+            local trackingent
+            if IsLegacy(self.Owner.linked_tardis) then
+                self.Owner.linked_tardis:SetTrackingEnt(data.ent)
+                trackingent = self.Owner.linked_tardis.trackingent
+            else
+                self.Owner.linked_tardis:SetTracking(data.ent, self.Owner)
+                trackingent = self.Owner.linked_tardis:GetTracking()
+            end
+            if IsValid(trackingent) then
                 self.Owner:ChatPrint("Tracking entity set.")
             else
                 self.Owner:ChatPrint("Tracking disabled.")
