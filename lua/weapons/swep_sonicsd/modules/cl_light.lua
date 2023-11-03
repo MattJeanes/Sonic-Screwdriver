@@ -10,7 +10,12 @@ SWEP:AddHook("PreDrawViewModel", "light", function(self,vm,ply,wep,keydown1,keyd
     if sonic.LightDisabled then return end
     local cureffect=0
     if (keydown1 or keydown2) then
-        local r,g,b=GetConVarNumber("sonic_light_r"),GetConVarNumber("sonic_light_g"),GetConVarNumber("sonic_light_b")
+        local r,g,b
+        if keydown1 then
+            r,g,b=GetConVarNumber("sonic_light_r"),GetConVarNumber("sonic_light_g"),GetConVarNumber("sonic_light_b")
+        else
+            r,g,b=GetConVarNumber("sonic_light2_r"),GetConVarNumber("sonic_light2_g"),GetConVarNumber("sonic_light2_b")
+        end
         if tobool(GetConVarNumber("sonic_light")) and CurTime()>cureffect then
             cureffect=CurTime()+0.05
             self.emitter:SetPos(vm:GetPos())
@@ -50,10 +55,13 @@ end)
 SWEP:AddHook("SonicChanged", "default-color", function(self)
     if GetConVar("sonic_should_set_default_colors"):GetBool() then
         local son = self:GetSonic()
-        if son ~= nil and self:GetSonic().DefaultLightColor ~= nil then
+        if son ~= nil and self:GetSonic().DefaultLightColor ~= nil and self:GetSonic().DefaultLightColor2 ~= nil then
             GetConVar("sonic_light_r"):SetInt(son.DefaultLightColor.r)
             GetConVar("sonic_light_g"):SetInt(son.DefaultLightColor.g)
             GetConVar("sonic_light_b"):SetInt(son.DefaultLightColor.b)
+            GetConVar("sonic_light2_r"):SetInt(son.DefaultLightColor2.r)
+            GetConVar("sonic_light2_g"):SetInt(son.DefaultLightColor2.g)
+            GetConVar("sonic_light2_b"):SetInt(son.DefaultLightColor2.b)
         end
     end
 end)

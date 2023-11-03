@@ -6,5 +6,6 @@ SonicSD:AddSonic({
     LightPos = Vector(20,-1.75,-2.75),
     LightBrightness = 5,
     SoundLoop = "sonicsd/loop.wav",
-    DefaultLightColor = Color(0, 100, 0)
+    DefaultLightColor = Color(0, 100, 0),
+    DefaultLightColor2 = Color(0, 200, 0)
 })
