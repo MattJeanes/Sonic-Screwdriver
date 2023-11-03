@@ -2,6 +2,7 @@
 
 local checkbox_options={
     {"Sound", "sonic_sound"},
+    {"Give sonic on spawn", "sonic_on_spawn"},
     {"Particle light", "sonic_light"},
     {"Dynamic light", "sonic_dynamiclight"},
     {"Enable default colors for each sonic", "sonic_should_set_default_colors"},

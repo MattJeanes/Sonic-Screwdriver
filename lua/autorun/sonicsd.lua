@@ -33,6 +33,14 @@ function SonicSD:LoadFolder(folder,addonly,noprefix)
         end
     end
 end
+
+hook.Add("PlayerLoadout", "SonicSD", function(ply)
+    if tobool(GetConVarNumber("sonic_on_spawn"))==true then
+        local selectedmodel=GetConVarString("sonic_model")
+        SonicSD:GiveSonic(ply, nil, {selectedmodel})
+    end
+end)
+
 SonicSD:LoadFolder("libraries/libraries")
 SonicSD:LoadFolder("libraries")
 SonicSD:LoadFolder()
