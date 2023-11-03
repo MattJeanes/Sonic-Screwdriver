@@ -4,6 +4,9 @@ SWEP:AddHook("Initialize", "sound", function(self)
     self.curbeep=0
     self.eyeangles=Angle(0,0,0)
     self.sound=CreateSound(self,self:GetSonic().SoundLoop)
+    buttonsoundon=self:GetSonic().ButtonSoundOn
+    buttonsoundoff=self:GetSonic().ButtonSoundOff
+    holster=self:GetSonic().HolsterSound
 end)
 
 SWEP:AddHook("SonicChanged", "sound", function(self)
@@ -11,11 +14,11 @@ SWEP:AddHook("SonicChanged", "sound", function(self)
 end)
 
 SWEP:AddHook("OnRemove", "sound", function(self)
-    if self.sound then self.sound:Stop() end
+    if self.sound then self.sound:Stop() self:EmitSound(buttonsoundoff) end
 end)
 
 SWEP:AddHook("Holster", "sound", function(self)
-    if self.sound then self.sound:Stop() end
+    if self.sound then self.sound:Stop() self:EmitSound(holster) end
 end)
 
 SWEP:AddHook("Think", "sound", function(self,keydown1,keydown2)
@@ -29,11 +32,14 @@ SWEP:AddHook("Think", "sound", function(self,keydown1,keydown2)
             self.eyeangles=self.Owner:EyeAngles()
             if not self.sound:IsPlaying() then
                 self.sound:Play()
+                self:EmitSound(buttonsoundon)
             end
         elseif self.sound and self.sound:IsPlaying() then
             self.sound:Stop()
+            self:EmitSound(buttonsoundoff)
         end
     elseif self.sound and self.sound:IsPlaying() then
         self.sound:Stop()
+        self:EmitSound(buttonsoundoff)
     end
 end)
