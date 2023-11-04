@@ -5,11 +5,11 @@ SonicSD:AddSonic({
     WorldModel = "models/doctor_who/sonic_screwdriver/w_10thsonicsd.mdl",
     LightPos = Vector(20,-2.5,-3.15),
     LightBrightness = 2,
-    SoundLoop = "sonicsd/loop_2005_11111.wav",
+    SoundLoop = "sonicsd/loop_2005_1.wav",
     SoundLoop2 = "sonicsd/loop_2005_2.wav",
     ButtonSoundOff = "sonicsd/button_off_2.wav",
-    DefaultLightColor = Color(0, 180, 200),
-    DefaultLightColor2 = Color(30, 200, 250)
+    DefaultLightColor = Color(0, 20, 200),
+    DefaultLightColor2 = Color(0, 100, 200)
 })
 
 SonicSD:AddSonic({

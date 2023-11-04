@@ -10,6 +10,6 @@ SonicSD:AddSonic({
     HolsterSound = "sonicsd/holster.wav",
     ButtonSoundOn = "sonicsd/button_on.wav",
     ButtonSoundOff = "sonicsd/button_off.wav",
-    DefaultLightColor = Color(0, 100, 0),
-    DefaultLightColor2 = Color(0, 200, 0)
+    DefaultLightColor = Color(50, 250, 50),
+    DefaultLightColor2 = Color(0, 200, 100)
 })
