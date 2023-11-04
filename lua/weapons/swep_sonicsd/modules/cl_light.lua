@@ -55,13 +55,15 @@ end)
 SWEP:AddHook("SonicChanged", "default-color", function(self)
     if GetConVar("sonic_should_set_default_colors"):GetBool() then
         local son = self:GetSonic()
-        if son ~= nil and self:GetSonic().DefaultLightColor ~= nil and self:GetSonic().DefaultLightColor2 ~= nil then
-            GetConVar("sonic_light_r"):SetInt(son.DefaultLightColor.r)
-            GetConVar("sonic_light_g"):SetInt(son.DefaultLightColor.g)
-            GetConVar("sonic_light_b"):SetInt(son.DefaultLightColor.b)
-            GetConVar("sonic_light2_r"):SetInt(son.DefaultLightColor2.r)
-            GetConVar("sonic_light2_g"):SetInt(son.DefaultLightColor2.g)
-            GetConVar("sonic_light2_b"):SetInt(son.DefaultLightColor2.b)
+        if son ~= nil and son.DefaultLightColor ~= nil then
+            local default = son.DefaultLightColor
+            local default2 = son.DefaultLightColor2 or default
+            GetConVar("sonic_light_r"):SetInt(default.r)
+            GetConVar("sonic_light_g"):SetInt(default.g)
+            GetConVar("sonic_light_b"):SetInt(default.b)
+            GetConVar("sonic_light2_r"):SetInt(default2.r)
+            GetConVar("sonic_light2_g"):SetInt(default2.g)
+            GetConVar("sonic_light2_b"):SetInt(default2.b)
         end
     end
 end)
