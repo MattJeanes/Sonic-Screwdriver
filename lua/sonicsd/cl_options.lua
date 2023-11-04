@@ -1,19 +1,24 @@
 -- Options
 
 local checkbox_options={
-    {"Sound", "sonic_sound"},
-    {"Particle light", "sonic_light"},
-    {"Dynamic light", "sonic_dynamiclight"},
-    {"Enable default colors for each sonic", "sonic_should_set_default_colors"},
+    -- Name, ConVar, Default, Userinfo
+    {"Give sonic on spawn", "sonic_give_on_spawn", false, true},
+    {"Sound", "sonic_sound", true, false},
+    {"Particle light", "sonic_light", true, false},
+    {"Dynamic light", "sonic_dynamiclight", true, false},
+    {"Enable default colors for each sonic", "sonic_should_set_default_colors", true, false},
 }
 
 for k,v in pairs(checkbox_options) do
-    CreateClientConVar(v[2], "1", true)
+    CreateClientConVar(v[2], v[3] and "1" or "0", true, v[4])
 end
 
 CreateClientConVar("sonic_light_r", "0", true)
 CreateClientConVar("sonic_light_g", "255", true)
 CreateClientConVar("sonic_light_b", "0", true)
+CreateClientConVar("sonic_light2_r", "0", true)
+CreateClientConVar("sonic_light2_g", "255", true)
+CreateClientConVar("sonic_light2_b", "0", true)
 CreateClientConVar("sonic_model", "0", true, true)
 cvars.AddChangeCallback("sonic_model", function(convar_name, old, selected)
     net.Start("SonicSD-Update")
@@ -29,30 +34,11 @@ end)
 hook.Add("PopulateToolMenu", "SonicSD-PopulateToolMenu", function()
     spawnmenu.AddToolMenuOption("Options", "Doctor Who", "Sonic_Options", "Sonic Screwdriver", "", "", function(panel)
         panel:ClearControls()
-        
-        local Mixer1 = vgui.Create( "DColorMixer" )
-        Mixer1:SetPalette( true )       --Show/hide the palette         DEF:true
-        Mixer1:SetAlphaBar( false )         --Show/hide the alpha bar       DEF:true
-        Mixer1:SetWangs( true )         --Show/hide the R G B A indicators  DEF:true
-        Mixer1:SetColor( Color(GetConVarNumber("sonic_light_r"), GetConVarNumber("sonic_light_g"), GetConVarNumber("sonic_light_b")) )  --Set the default color
-        Mixer1.ValueChanged = function(self,col)
-            RunConsoleCommand("sonic_light_r", col.r)
-            RunConsoleCommand("sonic_light_g", col.g)
-            RunConsoleCommand("sonic_light_b", col.b)
-        end
-        panel:AddItem(Mixer1)
-        
-        local checkboxes={}
-        for k,v in pairs(checkbox_options) do
-            CreateClientConVar(v[2], "1", true)
-            local checkBox = vgui.Create( "DCheckBoxLabel" ) 
-            checkBox:SetText( v[1] ) 
-            checkBox:SetValue( GetConVarNumber( v[2] ) )
-            checkBox:SetConVar( v[2] )
-            panel:AddItem(checkBox)
-            table.insert(checkboxes, checkBox)
-        end
-        
+
+        local DLabel1 = vgui.Create( "DLabel" )
+        DLabel1:SetText( "Sonic Screwdriver" )
+        panel:AddItem(DLabel1)
+
         local comboBox = vgui.Create("DComboBox")
         comboBox:SetText("Model")
         for k,v in pairs(SonicSD.sonics) do
@@ -68,5 +54,47 @@ hook.Add("PopulateToolMenu", "SonicSD-PopulateToolMenu", function()
             RunConsoleCommand("sonic_model", data)
         end
         panel:AddItem(comboBox)
+
+        local DLabel2 = vgui.Create( "DLabel" )
+        DLabel2:SetText( "Primary color" )
+        panel:AddItem(DLabel2)
+
+        local Mixer1 = vgui.Create( "DColorMixer" )
+        Mixer1:SetPalette( true )       --Show/hide the palette         DEF:true
+        Mixer1:SetAlphaBar( false )         --Show/hide the alpha bar       DEF:true
+        Mixer1:SetWangs( true )         --Show/hide the R G B A indicators  DEF:true
+        Mixer1:SetColor( Color(GetConVarNumber("sonic_light_r"), GetConVarNumber("sonic_light_g"), GetConVarNumber("sonic_light_b")) )  --Set the default color
+        Mixer1.ValueChanged = function(self,col)
+            RunConsoleCommand("sonic_light_r", col.r)
+            RunConsoleCommand("sonic_light_g", col.g)
+            RunConsoleCommand("sonic_light_b", col.b)
+        end
+        panel:AddItem(Mixer1)
+
+        local DLabel3 = vgui.Create( "DLabel" )
+        DLabel3:SetText( "Secondary color" )
+        panel:AddItem(DLabel3)
+
+        local Mixer2 = vgui.Create( "DColorMixer" )
+        Mixer2:SetPalette( true )       --Show/hide the palette         DEF:true
+        Mixer2:SetAlphaBar( false )         --Show/hide the alpha bar       DEF:true
+        Mixer2:SetWangs( true )         --Show/hide the R G B A indicators  DEF:true
+        Mixer2:SetColor( Color(GetConVarNumber("sonic_light2_r"), GetConVarNumber("sonic_light2_g"), GetConVarNumber("sonic_light2_b")) )  --Set the default color
+        Mixer2.ValueChanged = function(self,col)
+            RunConsoleCommand("sonic_light2_r", col.r)
+            RunConsoleCommand("sonic_light2_g", col.g)
+            RunConsoleCommand("sonic_light2_b", col.b)
+        end
+        panel:AddItem(Mixer2)
+
+        local checkboxes={}
+        for k,v in pairs(checkbox_options) do
+            local checkBox = vgui.Create( "DCheckBoxLabel" )
+            checkBox:SetText( v[1] )
+            checkBox:SetValue( GetConVarNumber( v[2] ) )
+            checkBox:SetConVar( v[2] )
+            panel:AddItem(checkBox)
+            table.insert(checkboxes, checkBox)
+        end
     end)
 end)

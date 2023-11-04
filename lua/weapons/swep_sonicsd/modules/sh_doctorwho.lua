@@ -65,7 +65,7 @@ if SERVER then
             end
         end
     end)
-    
+
     SWEP:AddFunction(function(self,data)
         if data.ent.TardisExterior and (not self.Owner:KeyDown(IN_WALK)) and data.keydown1 and (not data.keydown2) then
             local open = data.ent:DoorOpen()
@@ -76,6 +76,18 @@ if SERVER then
                     TARDIS_MSG(self.Owner, data.ent, "Failed to toggle door.", true)
                 end
             end
+        end
+    end)
+
+    SWEP:AddFunction(function(self,data)
+        if data.ent.TardisExterior and (self.Owner:KeyDown(IN_WALK)) and data.keydown2 and (not data.keydown1) then
+            data.ent:ToggleCloak()
+        end
+    end)
+
+    SWEP:AddFunction(function(self,data)
+        if data.class=="gmod_time_distortion_generator" and data.ent:GetEnabled() and (not self.Owner:KeyDown(IN_WALK)) and (data.keydown1 or data.keydown2) then
+            data.ent:Break()
         end
     end)
 
@@ -165,7 +177,7 @@ if SERVER then
                         end
                     end
                 end
-            elseif not IsLegacy(e) and (not data.keydown1) and data.keydown2 then
+            elseif not IsLegacy(e) and (not data.keydown1) and (not self.Owner:KeyDown(IN_WALK)) and data.keydown2 then
                 if self.Owner ~= e:GetCreator() and e.interior:GetSecurity() then
                     TARDIS:ErrorMessage(self.Owner, "This is not your TARDIS")
                     return

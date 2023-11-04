@@ -40,14 +40,16 @@ end
 
 SonicSD.sonics={}
 function SonicSD:AddSonic(t)
-    local base = table.Copy(self.sonics[t.Base] or self.sonics.default)
+    local base = table.Copy(self.sonics[t.Base] or self.sonics.base)
     if base then
-        base.DefaultLightColor = nil -- not to be inherited
+        base.IsBase = nil -- not to be inherited
         table.Merge(base,t)
         self.sonics[t.ID]=base
     else
         self.sonics[t.ID]=t
     end
+
+    if t.IsBase then return end
 
     local wep = {}
     wep.Category = SonicSD_OVERRIDES.MainCategory or "Doctor Who - Sonic Tools"
@@ -143,6 +145,13 @@ if SERVER then
     end
     concommand.Add("sonicsd_give", function(ply, command, args)
         SonicSD:GiveSonic(ply, command, args)
+    end)
+
+    hook.Add("PlayerLoadout", "sonicsd", function(ply)
+        if tobool(ply:GetInfoNum("sonic_give_on_spawn",0)) then
+            local id=ply:GetInfo("sonic_model","default")
+            SonicSD:GiveSonic(ply, nil, {id})
+        end
     end)
 end
 
