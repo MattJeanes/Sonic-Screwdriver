@@ -32,7 +32,7 @@ matproxy.Add(
 
         if keydown1 then
             col = col1
-        else then
+        else
             col = col2
         end
 
