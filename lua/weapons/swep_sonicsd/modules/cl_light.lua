@@ -11,10 +11,10 @@ SWEP:AddHook("PreDrawViewModel", "light", function(self,vm,ply,wep,keydown1,keyd
     local cureffect=0
     if (keydown1 or keydown2) then
         local r,g,b
-        if keydown1 then
-            r,g,b=GetConVarNumber("sonic_light_r"),GetConVarNumber("sonic_light_g"),GetConVarNumber("sonic_light_b")
-        else
+        if keydown2 then
             r,g,b=GetConVarNumber("sonic_light2_r"),GetConVarNumber("sonic_light2_g"),GetConVarNumber("sonic_light2_b")
+        else
+            r,g,b=GetConVarNumber("sonic_light_r"),GetConVarNumber("sonic_light_g"),GetConVarNumber("sonic_light_b")
         end
         if tobool(GetConVarNumber("sonic_light")) and CurTime()>cureffect then
             cureffect=CurTime()+0.05
