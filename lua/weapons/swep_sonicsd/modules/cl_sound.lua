@@ -16,7 +16,8 @@ SWEP:AddHook("SonicChanged", "sound", function(self)
 end)
 
 SWEP:AddHook("OnRemove", "sound", function(self)
-    if self.sound then self.sound:Stop() self:EmitSound(buttonsoundoff) end
+    if self.sound1 then self.sound1:Stop() self:EmitSound(buttonsoundoff) end
+    if self.sound2 then self.sound2:Stop() self:EmitSound(buttonsoundoff) end
 end)
 
 SWEP:AddHook("Holster", "sound", function(self)
