@@ -144,6 +144,13 @@ if SERVER then
     concommand.Add("sonicsd_give", function(ply, command, args)
         SonicSD:GiveSonic(ply, command, args)
     end)
+
+    hook.Add("PlayerLoadout", "sonicsd", function(ply)
+        if tobool(ply:GetInfoNum("sonic_give_on_spawn",0)) then
+            local id=ply:GetInfo("sonic_model","default")
+            SonicSD:GiveSonic(ply, nil, {id})
+        end
+    end)
 end
 
 SonicSD:LoadFolder("sonics",false,true)

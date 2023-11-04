@@ -1,15 +1,16 @@
 -- Options
 
 local checkbox_options={
-    {"Sound", "sonic_sound"},
-    {"Give sonic on spawn", "sonic_on_spawn"},
-    {"Particle light", "sonic_light"},
-    {"Dynamic light", "sonic_dynamiclight"},
-    {"Enable default colors for each sonic", "sonic_should_set_default_colors"},
+    -- Name, ConVar, Default, Userinfo
+    {"Give sonic on spawn", "sonic_give_on_spawn", false, true},
+    {"Sound", "sonic_sound", true, false},
+    {"Particle light", "sonic_light", true, false},
+    {"Dynamic light", "sonic_dynamiclight", true, false},
+    {"Enable default colors for each sonic", "sonic_should_set_default_colors", true, false},
 }
 
 for k,v in pairs(checkbox_options) do
-    CreateClientConVar(v[2], "1", true)
+    CreateClientConVar(v[2], v[3] and "1" or "0", true, v[4])
 end
 
 CreateClientConVar("sonic_light_r", "0", true)
@@ -60,7 +61,6 @@ hook.Add("PopulateToolMenu", "SonicSD-PopulateToolMenu", function()
 
         local checkboxes={}
         for k,v in pairs(checkbox_options) do
-            CreateClientConVar(v[2], "1", true)
             local checkBox = vgui.Create( "DCheckBoxLabel" )
             checkBox:SetText( v[1] )
             checkBox:SetValue( GetConVarNumber( v[2] ) )
