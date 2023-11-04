@@ -1,6 +1,19 @@
 -- Props
 
 SWEP:AddFunction(function(self,data)
+    if data.class=="gmod_balloon" and data.hooks.cantool then
+        data.ent:TakeDamage(100)
+    end
+end)
+
+SWEP:AddFunction(function(self,data)
+    if (data.class=="func_breakable" or data.class=="func_breakable_surf" or data.class=="func_physbox") and data.hooks.cantool then
+        data.ent:Fire("Break", 0)
+    end
+end)
+
+
+SWEP:AddFunction(function(self,data)
     if (data.class=="func_breakable" or data.class=="func_breakable_surf" or data.class=="func_physbox") and data.hooks.cantool then
         data.ent:Fire("Break", 0)
     end

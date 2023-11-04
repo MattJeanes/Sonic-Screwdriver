@@ -86,6 +86,12 @@ if SERVER then
     end)
 
     SWEP:AddFunction(function(self,data)
+        if data.class=="gmod_time_distortion_generator" and data.ent:GetEnabled() and (not self.Owner:KeyDown(IN_WALK)) and (data.keydown1 or data.keydown2) then
+            data.ent:Break()
+        end
+    end)
+
+    SWEP:AddFunction(function(self,data)
         if self.Owner:KeyDown(IN_WALK) and self.Owner.linked_tardis and IsValid(self.Owner.linked_tardis) and IsLegacy(self.Owner.linked_tardis) and data.keydown2 and not data.keydown1 and data.hooks.cantool then
             self.Owner.linked_tardis:SetTrackingEnt(data.ent)
             if IsValid(self.Owner.linked_tardis.trackingent) then
