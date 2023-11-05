@@ -8,5 +8,6 @@ SonicSD:AddSonic({
     SoundLoop = "sonicsd/loop_2010_1.wav",
     SoundLoop2 = "sonicsd/loop_2010_2.wav",
     DefaultLightColor = Color(50, 250, 50),
-    DefaultLightColor2 = Color(0, 200, 100)
+    DefaultLightColor2 = Color(0, 200, 100),
+    DefaultLightColorOff = Color(0, 80, 0)
 })

@@ -7,6 +7,7 @@ function SWEP:UpdateSounds()
     self.buttonsoundon=sonic.ButtonSoundOn
     self.buttonsoundoff=sonic.ButtonSoundOff
     self.holstersound=sonic.HolsterSound
+    self.buttondelay=sonic.ButtonDelay
 end
 
 SWEP:AddHook("Initialize", "sound", function(self)
@@ -30,47 +31,54 @@ SWEP:AddHook("Holster", "sound", function(self)
 end)
 
 SWEP:AddHook("Think", "sound", function(self,keydown1,keydown2)
+
+    local function StopSound(sound)
+        if sound and sound:IsPlaying() then
+            sound:Stop()
+        end
+    end
+
+    if tobool(GetConVarNumber("sonic_sound"))~=true or (not keydown1 and not keydown2) then
+        StopSound(self.sound1)
+        StopSound(self.sound2)
+        if self.soundon then
+            if CurTime() > (self.soundoff_last or 0) + 0.5 then
+                self:EmitSound(self.buttonsoundoff)
+                self.soundoff_last = CurTime()
+            end
+            self.soundon = false
+        end
+        return
+    end
+
+    self.soundon = true
+
+    local diff=self.Owner:EyeAngles()-self.eyeangles
+    if diff.p < 0 then diff.p=-diff.p end
+    if diff.y < 0 then diff.y=-diff.y end
+    local pitch=diff.p+diff.y*15
+
+    local function ProcessSound(sound, other_sound)
+        sound:ChangePitch(math.Clamp(pitch+100,100,150),0.1)
+        self.eyeangles=self.Owner:EyeAngles()
+        if not self.sound_start and not sound:IsPlaying() then
+            if CurTime() > (self.soundon_last or 0) + (self.buttondelay or 0) + 0.5 and not other_sound:IsPlaying() then
+                self:EmitSound(self.buttonsoundon)
+                self.soundon_last = CurTime()
+            end
+            self.sound_start = CurTime() + (self.buttondelay or 0)
+        end
+        if self.sound_start and self.sound_start < CurTime() and not sound:IsPlaying() then
+            sound:Play()
+            self.sound_start = nil
+            return
+        end
+        StopSound(other_sound)
+    end
+
     if keydown2 then
-        if tobool(GetConVarNumber("sonic_sound"))==true then
-            local diff=self.Owner:EyeAngles()-self.eyeangles
-            if diff.p < 0 then diff.p=-diff.p end
-            if diff.y < 0 then diff.y=-diff.y end
-            local pitch=diff.p+diff.y*15
-            self.sound2:ChangePitch(math.Clamp(pitch+100,100,150),0.1)
-            self.eyeangles=self.Owner:EyeAngles()
-            if not self.sound2:IsPlaying() then
-                self:EmitSound(self.buttonsoundon)
-                self.sound2:Play()
-            end
-            if self.sound1 and self.sound1:IsPlaying() then
-                self.sound1:Stop()
-            end
-        elseif self.sound2 and self.sound2:IsPlaying() then
-            self:EmitSound(self.buttonsoundoff)
-            self.sound2:Stop()
-        end
+        ProcessSound(self.sound2, self.sound1)
     elseif keydown1 then
-        if tobool(GetConVarNumber("sonic_sound"))==true then
-            local diff=self.Owner:EyeAngles()-self.eyeangles
-            if diff.p < 0 then diff.p=-diff.p end
-            if diff.y < 0 then diff.y=-diff.y end
-            local pitch=diff.p+diff.y*15
-            self.sound1:ChangePitch(math.Clamp(pitch+100,100,150),0.1)
-            self.eyeangles=self.Owner:EyeAngles()
-            if not self.sound1:IsPlaying() then
-                self:EmitSound(self.buttonsoundon)
-                self.sound1:Play()
-            end
-            if self.sound2 and self.sound2:IsPlaying() then
-                self.sound2:Stop()
-            end
-        elseif self.sound1 and self.sound1:IsPlaying() then
-            self:EmitSound(self.buttonsoundoff)
-            self.sound1:Stop()
-        end
-    elseif (self.sound1 and self.sound1:IsPlaying()) or (self.sound2 and self.sound2:IsPlaying()) then
-        self:EmitSound(self.buttonsoundoff)
-        self.sound1:Stop()
-        self.sound2:Stop()
+        ProcessSound(self.sound1, self.sound2)
     end
 end)

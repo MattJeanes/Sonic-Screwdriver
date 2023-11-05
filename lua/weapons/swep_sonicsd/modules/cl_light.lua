@@ -2,7 +2,7 @@
 
 SWEP:AddHook("Initialize", "light", function(self)
     self.emitter = ParticleEmitter(self:GetPos())
-    self.rgb = Color(GetConVarNumber("sonic_light_r"), GetConVarNumber("sonic_light_g"), GetConVarNumber("sonic_light_b"))
+    self.rgb = Color(GetConVarNumber("sonic_lightd_r"), GetConVarNumber("sonic_lightd_g"), GetConVarNumber("sonic_lightd_b"))
 end)
 
 SWEP:AddHook("PreDrawViewModel", "light", function(self,vm,ply,wep,keydown1,keydown2)
@@ -58,12 +58,16 @@ SWEP:AddHook("SonicChanged", "default-color", function(self)
         if son ~= nil and son.DefaultLightColor ~= nil then
             local default = son.DefaultLightColor
             local default2 = son.DefaultLightColor2 or default
+            local defaultd = son.DefaultLightColorOff or default
             GetConVar("sonic_light_r"):SetInt(default.r)
             GetConVar("sonic_light_g"):SetInt(default.g)
             GetConVar("sonic_light_b"):SetInt(default.b)
             GetConVar("sonic_light2_r"):SetInt(default2.r)
             GetConVar("sonic_light2_g"):SetInt(default2.g)
             GetConVar("sonic_light2_b"):SetInt(default2.b)
+            GetConVar("sonic_lightd_r"):SetInt(defaultd.r)
+            GetConVar("sonic_lightd_g"):SetInt(defaultd.g)
+            GetConVar("sonic_lightd_b"):SetInt(defaultd.b)
         end
     end
 end)
