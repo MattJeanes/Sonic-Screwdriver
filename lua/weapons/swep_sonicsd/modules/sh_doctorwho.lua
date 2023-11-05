@@ -80,12 +80,6 @@ if SERVER then
     end)
 
     SWEP:AddFunction(function(self,data)
-        if data.ent.TardisExterior and (self.Owner:KeyDown(IN_WALK)) and data.keydown2 and (not data.keydown1) then
-            data.ent:ToggleCloak()
-        end
-    end)
-
-    SWEP:AddFunction(function(self,data)
         if data.class=="gmod_time_distortion_generator" and data.ent:GetEnabled() and (not self.Owner:KeyDown(IN_WALK)) and (data.keydown1 or data.keydown2) then
             data.ent:Break()
         end
