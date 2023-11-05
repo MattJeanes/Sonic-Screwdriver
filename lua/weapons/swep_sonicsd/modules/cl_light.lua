@@ -3,12 +3,26 @@
 SWEP:AddHook("Initialize", "light", function(self)
     self.emitter = ParticleEmitter(self:GetPos())
     self.rgb = Color(GetConVarNumber("sonic_lightd_r"), GetConVarNumber("sonic_lightd_g"), GetConVarNumber("sonic_lightd_b"))
+
+    local sonic = self:GetSonic()
+    self.changing_texture = sonic.ChangingTexture
 end)
 
 SWEP:AddHook("PreDrawViewModel", "light", function(self,vm,ply,wep,keydown1,keydown2)
     local sonic=self:GetSonic()
     if sonic.LightDisabled then return end
     local cureffect=0
+
+    if self.changing_texture then
+        if keydown1 or keydown2 then
+            tardisdebug("1")
+            self:SetSubMaterial(self.changing_texture[1], self.changing_texture[2])
+        else
+            tardisdebug("2")
+            self:SetSubMaterial(self.changing_texture[1], self.changing_texture[3])
+        end
+    end
+
     if (keydown1 or keydown2) then
         local r,g,b
         if keydown2 then
