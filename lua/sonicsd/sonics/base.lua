@@ -8,6 +8,7 @@ SonicSD:AddSonic({
     LightBrightness = 5,
     SoundLoop = "sonicsd/loop_2010_1.wav",
     HolsterSound = "sonicsd/holster.wav",
+    ButtonDelay = 0,
     ButtonSoundOn = "sonicsd/button_on.wav",
     ButtonSoundOff = "sonicsd/button_off.wav"
 })

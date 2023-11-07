@@ -18,6 +18,7 @@ matproxy.Add(
 
         local col1 = Vector(GetConVarNumber("sonic_light_r")/255, GetConVarNumber("sonic_light_g")/255, GetConVarNumber("sonic_light_b")/255)
         local col2 = Vector(GetConVarNumber("sonic_light2_r")/255, GetConVarNumber("sonic_light2_g")/255, GetConVarNumber("sonic_light2_b")/255)
+        local cold = Vector(GetConVarNumber("sonic_lightoff_r")/255, GetConVarNumber("sonic_lightoff_g")/255, GetConVarNumber("sonic_lightoff_b")/255)
         if not isvector(col1 and col2) then return end
 
         local keydown1=owner:KeyDown(IN_ATTACK)
@@ -27,14 +28,18 @@ matproxy.Add(
         local col
         if keydown1 or keydown2 then
             mul = 4.0 + math.sin( CurTime() * 5 ) * 0.25
+        elseif cold == col1 then
+            mul = 0.6
         else
-            mul = 0.7
+            mul = 1
         end
 
         if keydown2 then
             col=col2
-        else
+        elseif keydown1 then
             col=col1
+        else
+            col=cold
         end
 
         mat:SetVector( self.ResultTo, col * mul );
