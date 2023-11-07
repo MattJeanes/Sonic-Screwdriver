@@ -19,9 +19,9 @@ CreateClientConVar("sonic_light_b", "0", true)
 CreateClientConVar("sonic_light2_r", "0", true)
 CreateClientConVar("sonic_light2_g", "255", true)
 CreateClientConVar("sonic_light2_b", "0", true)
-CreateClientConVar("sonic_lightd_r", "0", true)
-CreateClientConVar("sonic_lightd_g", "255", true)
-CreateClientConVar("sonic_lightd_b", "0", true)
+CreateClientConVar("sonic_lightoff_r", "0", true)
+CreateClientConVar("sonic_lightoff_g", "255", true)
+CreateClientConVar("sonic_lightoff_b", "0", true)
 CreateClientConVar("sonic_model", "0", true, true)
 cvars.AddChangeCallback("sonic_model", function(convar_name, old, selected)
     net.Start("SonicSD-Update")
@@ -98,11 +98,11 @@ hook.Add("PopulateToolMenu", "SonicSD-PopulateToolMenu", function()
         Mixer3:SetPalette( true )       --Show/hide the palette         DEF:true
         Mixer3:SetAlphaBar( false )         --Show/hide the alpha bar       DEF:true
         Mixer3:SetWangs( true )         --Show/hide the R G B A indicators  DEF:true
-        Mixer3:SetColor( Color(GetConVarNumber("sonic_lightd_r"), GetConVarNumber("sonic_lightd_g"), GetConVarNumber("sonic_lightd_b")) )  --Set the default color
+        Mixer3:SetColor( Color(GetConVarNumber("sonic_lightoff_r"), GetConVarNumber("sonic_lightoff_g"), GetConVarNumber("sonic_lightoff_b")) )  --Set the default color
         Mixer3.ValueChanged = function(self,col)
-            RunConsoleCommand("sonic_lightd_r", col.r)
-            RunConsoleCommand("sonic_lightd_g", col.g)
-            RunConsoleCommand("sonic_lightd_b", col.b)
+            RunConsoleCommand("sonic_lightoff_r", col.r)
+            RunConsoleCommand("sonic_lightoff_g", col.g)
+            RunConsoleCommand("sonic_lightoff_b", col.b)
         end
         panel:AddItem(Mixer3)
 

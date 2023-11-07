@@ -18,7 +18,7 @@ matproxy.Add(
 
         local col1 = Vector(GetConVarNumber("sonic_light_r")/255, GetConVarNumber("sonic_light_g")/255, GetConVarNumber("sonic_light_b")/255)
         local col2 = Vector(GetConVarNumber("sonic_light2_r")/255, GetConVarNumber("sonic_light2_g")/255, GetConVarNumber("sonic_light2_b")/255)
-        local cold = Vector(GetConVarNumber("sonic_lightd_r")/255, GetConVarNumber("sonic_lightd_g")/255, GetConVarNumber("sonic_lightd_b")/255)
+        local cold = Vector(GetConVarNumber("sonic_lightoff_r")/255, GetConVarNumber("sonic_lightoff_g")/255, GetConVarNumber("sonic_lightoff_b")/255)
         if not isvector(col1 and col2) then return end
 
         local keydown1=owner:KeyDown(IN_ATTACK)

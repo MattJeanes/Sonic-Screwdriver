@@ -41,6 +41,8 @@ SWEP:AddHook("Think", "sound", function(self,keydown1,keydown2)
     if tobool(GetConVarNumber("sonic_sound"))~=true or (not keydown1 and not keydown2) then
         StopSound(self.sound1)
         StopSound(self.sound2)
+        self.sound_start = nil
+        self.sound_playing = nil
         if self.soundon then
             if CurTime() > (self.soundoff_last or 0) + 0.5 then
                 self:EmitSound(self.buttonsoundoff)
@@ -61,15 +63,16 @@ SWEP:AddHook("Think", "sound", function(self,keydown1,keydown2)
     local function ProcessSound(sound, other_sound)
         sound:ChangePitch(math.Clamp(pitch+100,100,150),0.1)
         self.eyeangles=self.Owner:EyeAngles()
-        if not self.sound_start and not sound:IsPlaying() then
+        if not self.sound_start and not self.sound_playing then
             if CurTime() > (self.soundon_last or 0) + (self.buttondelay or 0) + 0.5 and not other_sound:IsPlaying() then
                 self:EmitSound(self.buttonsoundon)
                 self.soundon_last = CurTime()
             end
             self.sound_start = CurTime() + (self.buttondelay or 0)
         end
-        if self.sound_start and self.sound_start < CurTime() and not sound:IsPlaying() then
+        if ((self.sound_start and self.sound_start < CurTime()) or self.sound_playing) and not sound:IsPlaying() then
             sound:Play()
+            self.sound_playing = true
             self.sound_start = nil
             return
         end
