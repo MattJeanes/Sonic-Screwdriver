@@ -88,7 +88,7 @@ if SERVER then
     SWEP:AddFunction(function(self,data)
         if self.Owner:KeyDown(IN_WALK) and self.Owner.linked_tardis and IsValid(self.Owner.linked_tardis) and data.keydown2 and not data.keydown1 and data.hooks.cantool then
             local trackingent = data.ent
-            if trackingent == self.Owner.linked_tardis then
+            if IsValid(trackingent) and trackingent == self.Owner.linked_tardis or (trackingent.TardisPart and trackingent.ExteriorPart and trackingent.exterior == self.Owner.linked_tardis) then
                 trackingent = self.Owner
             end
             if IsLegacy(self.Owner.linked_tardis) then
@@ -196,7 +196,7 @@ if SERVER then
     end)
 
     SWEP:AddFunction(function(self,data)
-        if data.ent.tardis_part or data.ent.TardisPart then
+        if (data.ent.tardis_part or data.ent.TardisPart) and not data.ent.ExteriorPart then
             data.ent:Use(self.Owner, self.Owner, USE_ON, 1)
         end
     end)
