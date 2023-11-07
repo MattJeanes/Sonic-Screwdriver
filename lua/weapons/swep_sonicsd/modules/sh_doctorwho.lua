@@ -87,12 +87,15 @@ if SERVER then
 
     SWEP:AddFunction(function(self,data)
         if self.Owner:KeyDown(IN_WALK) and self.Owner.linked_tardis and IsValid(self.Owner.linked_tardis) and data.keydown2 and not data.keydown1 and data.hooks.cantool then
-            local trackingent
+            local trackingent = data.ent
+            if trackingent == self.Owner.linked_tardis then
+                trackingent = self.Owner
+            end
             if IsLegacy(self.Owner.linked_tardis) then
-                self.Owner.linked_tardis:SetTrackingEnt(data.ent)
+                self.Owner.linked_tardis:SetTrackingEnt(trackingent)
                 trackingent = self.Owner.linked_tardis.trackingent
             else
-                self.Owner.linked_tardis:SetTracking(data.ent, self.Owner)
+                self.Owner.linked_tardis:SetTracking(trackingent, self.Owner)
                 trackingent = self.Owner.linked_tardis:GetTracking()
             end
             if IsValid(trackingent) then
