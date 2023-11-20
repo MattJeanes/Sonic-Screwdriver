@@ -86,7 +86,7 @@ if SERVER then
     end)
 
     SWEP:AddFunction(function(self,data)
-        if data.class=="gmod_time_distortion_generator" and data.ent:GetEnabled() and (not self.Owner:KeyDown(IN_WALK)) and (data.keydown1 or data.keydown2) then
+        if (data.class=="gmod_time_distortion_generator" or data.class=="gmod_artron_inhibitor") and data.ent:GetEnabled() and (not self.Owner:KeyDown(IN_WALK)) and (data.keydown1 or data.keydown2) then
             data.ent:Break()
         end
     end)
