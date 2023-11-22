@@ -6,6 +6,7 @@ SonicSD:AddSonic({
     WorldModel = "models/weapons/w_sonicsd.mdl",
     LightPos = Vector(20,-1.75,-2.75),
     LightBrightness = 5,
+    ButtonSound = true,
     SoundLoop = "sonicsd/loop_2010_1.wav",
     HolsterSound = "sonicsd/holster.wav",
     ButtonDelay = 0,
