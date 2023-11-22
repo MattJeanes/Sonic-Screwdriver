@@ -4,6 +4,7 @@ function SWEP:UpdateSounds()
     local sonic = self:GetSonic()
     self.sound1=CreateSound(self,sonic.SoundLoop)
     self.sound2=CreateSound(self,sonic.SoundLoop2 or sonic.SoundLoop)
+    self.buttonsound=sonic.ButtonSound
     self.buttonsoundon=sonic.ButtonSoundOn
     self.buttonsoundoff=sonic.ButtonSoundOff
     self.holstersound=sonic.HolsterSound
@@ -44,7 +45,7 @@ SWEP:AddHook("Think", "sound", function(self,keydown1,keydown2)
         self.sound_start = nil
         self.sound_playing = nil
         if self.soundon then
-            if CurTime() > (self.soundoff_last or 0) + 0.5 then
+            if CurTime() > (self.soundoff_last or 0) + 0.5 and (self.buttonsound ~= false) then
                 self:EmitSound(self.buttonsoundoff)
                 self.soundoff_last = CurTime()
             end
@@ -64,7 +65,7 @@ SWEP:AddHook("Think", "sound", function(self,keydown1,keydown2)
         sound:ChangePitch(math.Clamp(pitch+100,100,150),0.1)
         self.eyeangles=self.Owner:EyeAngles()
         if not self.sound_start and not self.sound_playing then
-            if CurTime() > (self.soundon_last or 0) + (self.buttondelay or 0) + 0.5 and not other_sound:IsPlaying() then
+            if CurTime() > (self.soundon_last or 0) + (self.buttondelay or 0) + 0.5 and not other_sound:IsPlaying() and (self.buttonsound ~= false) then
                 self:EmitSound(self.buttonsoundon)
                 self.soundon_last = CurTime()
             end
