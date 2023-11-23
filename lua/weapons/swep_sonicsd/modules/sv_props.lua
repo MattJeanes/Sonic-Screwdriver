@@ -12,13 +12,6 @@ SWEP:AddFunction(function(self,data)
     end
 end)
 
-
-SWEP:AddFunction(function(self,data)
-    if (data.class=="func_breakable" or data.class=="func_breakable_surf" or data.class=="func_physbox") and data.hooks.cantool then
-        data.ent:Fire("Break", 0)
-    end
-end)
-
 SWEP:AddFunction(function(self,data)
     if (data.class=="prop_physics" or data.class=="prop_physics_multiplayer") and data.hooks.canmove then
         local phys=data.ent:GetPhysicsObject()
