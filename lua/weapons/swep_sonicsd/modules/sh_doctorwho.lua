@@ -65,7 +65,7 @@ if SERVER then
             end
         end
     end)
-    
+
     SWEP:AddFunction(function(self,data)
         if data.ent.TardisExterior and (not self.Owner:KeyDown(IN_WALK)) and data.keydown1 and (not data.keydown2) then
             local open = data.ent:DoorOpen()
@@ -80,9 +80,25 @@ if SERVER then
     end)
 
     SWEP:AddFunction(function(self,data)
-        if self.Owner:KeyDown(IN_WALK) and self.Owner.linked_tardis and IsValid(self.Owner.linked_tardis) and IsLegacy(self.Owner.linked_tardis) and data.keydown2 and not data.keydown1 and data.hooks.cantool then
-            self.Owner.linked_tardis:SetTrackingEnt(data.ent)
-            if IsValid(self.Owner.linked_tardis.trackingent) then
+        if (data.class=="gmod_time_distortion_generator" or data.class=="gmod_artron_inhibitor") and data.ent:GetEnabled() and (not self.Owner:KeyDown(IN_WALK)) and (data.keydown1 or data.keydown2) then
+            data.ent:Break()
+        end
+    end)
+
+    SWEP:AddFunction(function(self,data)
+        if self.Owner:KeyDown(IN_WALK) and self.Owner.linked_tardis and IsValid(self.Owner.linked_tardis) and data.keydown2 and not data.keydown1 and data.hooks.cantool then
+            local trackingent = data.ent
+            if IsValid(trackingent) and trackingent == self.Owner.linked_tardis or (trackingent.TardisPart and trackingent.ExteriorPart and trackingent.exterior == self.Owner.linked_tardis) then
+                trackingent = self.Owner
+            end
+            if IsLegacy(self.Owner.linked_tardis) then
+                self.Owner.linked_tardis:SetTrackingEnt(trackingent)
+                trackingent = self.Owner.linked_tardis.trackingent
+            else
+                self.Owner.linked_tardis:SetTracking(trackingent, self.Owner)
+                trackingent = self.Owner.linked_tardis:GetTracking()
+            end
+            if IsValid(trackingent) then
                 self.Owner:ChatPrint("Tracking entity set.")
             else
                 self.Owner:ChatPrint("Tracking disabled.")
@@ -158,7 +174,7 @@ if SERVER then
                         end
                     end
                 end
-            elseif not IsLegacy(e) and (not data.keydown1) and data.keydown2 then
+            elseif not IsLegacy(e) and (not data.keydown1) and (not self.Owner:KeyDown(IN_WALK)) and data.keydown2 then
                 if self.Owner ~= e:GetCreator() and e.interior:GetSecurity() then
                     TARDIS:ErrorMessage(self.Owner, "This is not your TARDIS")
                     return
@@ -180,7 +196,7 @@ if SERVER then
     end)
 
     SWEP:AddFunction(function(self,data)
-        if data.ent.tardis_part or data.ent.TardisPart then
+        if (data.ent.tardis_part or data.ent.TardisPart) and not data.ent.ExteriorPart then
             data.ent:Use(self.Owner, self.Owner, USE_ON, 1)
         end
     end)
@@ -211,7 +227,7 @@ if SERVER then
     end)
 
     SWEP:AddHook("Hold", "doctorwho", function(self,data)
-        if data.class=="gmod_time_distortion_generator" then
+        if data.class=="gmod_time_distortion_generator" or data.class=="gmod_artron_inhibitor" then
             if (not self.repairtick) or CurTime() > self.repairtick then
                 self.repairtick = CurTime() + 1
                 data.ent:Repair(20)

@@ -2,7 +2,7 @@
 
 SWEP:AddHook("Initialize", "light", function(self)
     self.emitter = ParticleEmitter(self:GetPos())
-    self.rgb = Color(GetConVarNumber("sonic_light_r"), GetConVarNumber("sonic_light_g"), GetConVarNumber("sonic_light_b"))
+    self.rgb = Color(GetConVarNumber("sonic_lightoff_r"), GetConVarNumber("sonic_lightoff_g"), GetConVarNumber("sonic_lightoff_b"))
 end)
 
 SWEP:AddHook("PreDrawViewModel", "light", function(self,vm,ply,wep,keydown1,keydown2)
@@ -10,7 +10,12 @@ SWEP:AddHook("PreDrawViewModel", "light", function(self,vm,ply,wep,keydown1,keyd
     if sonic.LightDisabled then return end
     local cureffect=0
     if (keydown1 or keydown2) then
-        local r,g,b=GetConVarNumber("sonic_light_r"),GetConVarNumber("sonic_light_g"),GetConVarNumber("sonic_light_b")
+        local r,g,b
+        if keydown2 then
+            r,g,b=GetConVarNumber("sonic_light2_r"),GetConVarNumber("sonic_light2_g"),GetConVarNumber("sonic_light2_b")
+        else
+            r,g,b=GetConVarNumber("sonic_light_r"),GetConVarNumber("sonic_light_g"),GetConVarNumber("sonic_light_b")
+        end
         if tobool(GetConVarNumber("sonic_light")) and CurTime()>cureffect then
             cureffect=CurTime()+0.05
             self.emitter:SetPos(vm:GetPos())
@@ -50,10 +55,19 @@ end)
 SWEP:AddHook("SonicChanged", "default-color", function(self)
     if GetConVar("sonic_should_set_default_colors"):GetBool() then
         local son = self:GetSonic()
-        if son ~= nil and self:GetSonic().DefaultLightColor ~= nil then
-            GetConVar("sonic_light_r"):SetInt(son.DefaultLightColor.r)
-            GetConVar("sonic_light_g"):SetInt(son.DefaultLightColor.g)
-            GetConVar("sonic_light_b"):SetInt(son.DefaultLightColor.b)
+        if son ~= nil and son.DefaultLightColor ~= nil then
+            local default = son.DefaultLightColor
+            local default2 = son.DefaultLightColor2 or default
+            local defaultd = son.DefaultLightColorOff or default
+            GetConVar("sonic_light_r"):SetInt(default.r)
+            GetConVar("sonic_light_g"):SetInt(default.g)
+            GetConVar("sonic_light_b"):SetInt(default.b)
+            GetConVar("sonic_light2_r"):SetInt(default2.r)
+            GetConVar("sonic_light2_g"):SetInt(default2.g)
+            GetConVar("sonic_light2_b"):SetInt(default2.b)
+            GetConVar("sonic_lightoff_r"):SetInt(defaultd.r)
+            GetConVar("sonic_lightoff_g"):SetInt(defaultd.g)
+            GetConVar("sonic_lightoff_b"):SetInt(defaultd.b)
         end
     end
 end)
