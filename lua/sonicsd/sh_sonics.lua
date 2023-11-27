@@ -73,6 +73,7 @@ function SonicSD:AddSonic(t)
     list.Set("Weapon", "sonicsd-"..t.ID, wep)
 end
 
+list.Set( "ContentCategoryIcons", "Doctor Who - Sonic Tools", "vgui/sonic_icon.png" )
 
 hook.Add("PostGamemodeLoaded", "sonicsd", function()
     if not spawnmenu then return end
