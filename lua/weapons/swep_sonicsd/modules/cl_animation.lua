@@ -17,6 +17,7 @@ function SWEP:SetupAnimations()
     self.anims = {}
     if anims.Mode then
         self:SetupAnimation("mode", anims.Mode)
+        self:SetModeAnimation(self:GetSonicMode())
     end
     if anims.Toggle then
         self:SetupAnimation("toggle", anims.Toggle)
@@ -51,7 +52,6 @@ end)
 
 SWEP:AddHook("SonicChanged", "animation", function(self)
     self:SetupAnimations()
-    self:SetModeAnimation(self:GetSonicMode())
 end)
 
 SWEP:AddHook("ModeChanged", "animation", function(self, mode)
