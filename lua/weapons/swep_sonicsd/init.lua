@@ -9,6 +9,7 @@ SWEP.WaitTime = 0.5
 
 util.AddNetworkString("SonicSD-Initialize")
 util.AddNetworkString("SonicSD-Update")
+util.AddNetworkString("SonicSD-ModeChanged")
 
 function SWEP:Initialize()
     self:SetHoldType( self.HoldType )
@@ -16,6 +17,7 @@ function SWEP:Initialize()
     self.wait=nil
     self.ent=nil
     self.reloadcur=0
+    self.mode=false
     self._initqueue={}
 end
 
@@ -51,7 +53,7 @@ end
 function SWEP:Reload()
     if self._ready and CurTime()>self.reloadcur then
         self.reloadcur=CurTime()+1
-        self:CallHook("Reload")
+        self.reloadstart=CurTime()
     end
 end
 
@@ -59,6 +61,7 @@ function SWEP:InitClient(ply)
     net.Start("SonicSD-Initialize")
         net.WriteEntity(self)
         net.WriteString(self:GetSonicID())
+        net.WriteBool(self:GetSonicMode())
     net.Send(ply)
 end
 
@@ -129,6 +132,19 @@ function SWEP:Think()
             self.wait=nil
             self.ent=nil
             self.data=nil
+        end
+
+        if self.reloadstart then
+            if CurTime()>self.reloadstart+0.5 and not self.toggled then
+                self.toggled=true
+                self:SetSonicMode(not self:GetSonicMode())
+            elseif not self.Owner:KeyDown(IN_RELOAD) then
+                self.reloadstart=nil
+                if not self.toggled then
+                    self:CallHook("Reload")
+                end
+                self.toggled=nil
+            end
         end
         
         self:CallHook("Think",keydown1,keydown2)

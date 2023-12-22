@@ -17,7 +17,9 @@ net.Receive("SonicSD-Initialize",function(len)
     local sonic = net.ReadEntity()
     if IsValid(sonic) and sonic:GetClass()=="swep_sonicsd" then
         local id = net.ReadString()
+        local mode = net.ReadBool()
         sonic:SetSonicID(id)
+        sonic:SetSonicMode(mode)
         sonic._ready = true
         sonic:CallHook("Initialize")
     end
