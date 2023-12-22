@@ -1,6 +1,6 @@
 "VertexLitGeneric"
 {
-	"$basetexture" "Doctor_Who/Sonic_Screwdriver/Sonic Screwdriver"
+	"$basetexture" "doctor_who/sonic_screwdriver/sonic screwdriver"
 	"$surfaceprop" "metal"
-	//"$bumpmap" "Doctor_Who/normals/Sonic_Screwdriver/Sonic_Screwdriver_NRM"
+	"$bumpmap" "doctor_who/sonic_screwdriver/sonic screwdriver normal"
 }
