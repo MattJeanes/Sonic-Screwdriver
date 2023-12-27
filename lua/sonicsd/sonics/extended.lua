@@ -1,15 +1,33 @@
 SonicSD:AddSonic({
-    ID = "10th-slogan",
-    Name = "2005 Screwdriver",
-    ViewModel = "models/doctor_who/sonic_screwdriver/c_10thsonicsd.mdl",
-    WorldModel = "models/doctor_who/sonic_screwdriver/w_10thsonicsd.mdl",
-    LightPos = Vector(20,-2.5,-3.15),
+    ID = "9thdocsonic",
+    Name = "9th Doctor Screwdriver",
+    ViewModel = "models/fuzzyleo/sonics/c_10thsonic.mdl",
+    WorldModel = "models/fuzzyleo/sonics/w_10thsonic.mdl",
+    Skin = 0,
+    LightPos = Vector(-100,0,0),
     LightBrightness = 2,
     SoundLoop = "sonicsd/loop_2005_1.wav",
     SoundLoop2 = "sonicsd/loop_2005_2.wav",
     ButtonSoundOff = "sonicsd/button_off_2.wav",
-    DefaultLightColor = Color(0, 20, 200),
-    DefaultLightColor2 = Color(0, 100, 200)
+    DefaultLightColor = Color(0, 20, 218),
+    DefaultLightColor2 = Color(17, 5, 255),
+    DefaultLightColorOff = Color(0, 12, 82),
+    ModeSoundOn = "sonicsd/button_off_2.wav",
+    ModeSoundOff = "sonicsd/button_off_2.wav",
+    ModeLightPos = Vector(-100,0,0),
+    Animations = {
+        Mode = {
+            Param = "switch",
+            Speed = 1
+        }
+    }
+})
+
+SonicSD:AddSonic({
+    ID = "10thdocsonic",
+    Base = "9thdocsonic",
+    Name = "10th Doctor Screwdriver",
+    Skin = 1
 })
 
 SonicSD:AddSonic({
