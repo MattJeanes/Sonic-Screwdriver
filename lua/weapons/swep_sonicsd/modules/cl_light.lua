@@ -20,7 +20,7 @@ SWEP:AddHook("PreDrawViewModel", "light", function(self,vm,ply,wep,keydown1,keyd
             cureffect=CurTime()+0.05
             self.emitter:SetPos(vm:GetPos())
             local velocity = LocalPlayer():GetVelocity()
-            local pos=sonic.LightPos
+            local pos=self.mode and sonic.ModeLightPos or sonic.LightPos
             local spawnpos = vm:LocalToWorld(pos)
             local particle = self.emitter:Add("sprites/glow04_noz", spawnpos)
             if (particle) then

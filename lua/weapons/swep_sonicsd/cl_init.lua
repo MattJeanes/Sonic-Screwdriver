@@ -17,7 +17,9 @@ net.Receive("SonicSD-Initialize",function(len)
     local sonic = net.ReadEntity()
     if IsValid(sonic) and sonic:GetClass()=="swep_sonicsd" then
         local id = net.ReadString()
+        local mode = net.ReadBool()
         sonic:SetSonicID(id)
+        sonic:SetSonicMode(mode)
         sonic._ready = true
         sonic:CallHook("Initialize")
     end
@@ -37,14 +39,22 @@ end
 
 function SWEP:DrawWorldModel()
     if self._ready then
-        self:SetModel(self:GetSonic().WorldModel)
+        local sonic = self:GetSonic()
+        self:SetModel(sonic.WorldModel)
+        if sonic.Skin then
+            self:SetSkin(sonic.Skin)
+        end
         self:DrawModel()
     end
 end
 
 function SWEP:PreDrawViewModel(vm,ply,wep)
     if self._ready then
-        vm:SetModel(self:GetSonic().ViewModel)
+        local sonic = self:GetSonic()
+        vm:SetModel(sonic.ViewModel)
+        if sonic.Skin then
+            vm:SetSkin(sonic.Skin)
+        end
         local keydown1=LocalPlayer():KeyDown(IN_ATTACK)
         local keydown2=LocalPlayer():KeyDown(IN_ATTACK2)
         self:CallHook("PreDrawViewModel",vm,ply,wep,keydown1,keydown2)

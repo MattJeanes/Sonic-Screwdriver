@@ -34,6 +34,21 @@ function SWEP:SetSonicID(id)
     self:CallHook("SonicChanged")
 end
 
+function SWEP:GetSonicMode()
+    return self.mode
+end
+
+function SWEP:SetSonicMode(mode)
+    self.mode = mode
+    self:CallHook("ModeChanged", mode)
+    if SERVER then
+        net.Start("SonicSD-ModeChanged")
+            net.WriteEntity(self)
+            net.WriteBool(self.mode)
+        net.Broadcast()
+    end
+end
+
 function SWEP:GetSonic()
     return SonicSD.sonics[self:GetSonicID()] or SonicSD.sonics.default
 end
@@ -44,6 +59,14 @@ net.Receive("SonicSD-Update",function(len,ply)
     local weapon = ply:GetWeapon("swep_sonicsd")
     if IsValid(weapon) and weapon._ready then
         weapon:SetSonicID(selected)
+    end
+end)
+
+net.Receive("SonicSD-ModeChanged",function(len,ply)
+    local weapon = net.ReadEntity()
+    local mode = net.ReadBool()
+    if IsValid(weapon) then
+        weapon:SetSonicMode(mode)
     end
 end)
 

@@ -9,6 +9,8 @@ function SWEP:UpdateSounds()
     self.buttonsoundoff=sonic.ButtonSoundOff
     self.holstersound=sonic.HolsterSound
     self.buttondelay=sonic.ButtonDelay
+    self.modesoundon=sonic.ModeSoundOn
+    self.modesoundoff=sonic.ModeSoundOff
 end
 
 SWEP:AddHook("Initialize", "sound", function(self)
@@ -19,6 +21,14 @@ end)
 
 SWEP:AddHook("SonicChanged", "sound", function(self)
     self:UpdateSounds()
+end)
+
+SWEP:AddHook("ModeChanged", "sound", function(self, mode)
+    if mode and self.modesoundon then
+        self:EmitSound(self.modesoundon)
+    elseif not mode and self.modesoundoff then
+        self:EmitSound(self.modesoundoff)
+    end 
 end)
 
 SWEP:AddHook("OnRemove", "sound", function(self)
