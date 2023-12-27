@@ -1,9 +1,9 @@
 Sonic-Screwdriver
-===============
+=
 A working SWEP version of the Sonic Screwdriver for Garry's Mod.
 
 Usage
-===============
+=
 
 Simply point the screwdriver at something and hold mouse1/mouse2 for a second and it will do any of it's coded functions.
 
@@ -26,6 +26,10 @@ At the moment, the sonic screwdriver can:
 • Interact with the TARDIS.
 
 Installation
-===============
-1. Put this folder into Steam/Steamapps/(Steam username or 'Common')/garrysmod/garrysmod/addons/
-2. Done, enjoy the sonic waves.
+=
+
+### Steam Workshop
+https://steamcommunity.com/sharedfiles/filedetails/?id=153825236
+
+### Manual installation
+Remove any previous version then put this folder into Steam/Steamapps/common/garrysmod/garrysmod/addons/
