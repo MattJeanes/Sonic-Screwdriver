@@ -32,7 +32,7 @@ SonicSD:AddSonic({
 
 SonicSD:AddSonic({
     ID = "4th-slogan",
-    Name = "1968 Screwdriver",
+    Name = "4th Doctor Screwdriver",
     ViewModel = "models/doctor_who/sonic_screwdriver/c_4thsonicsd.mdl",
     WorldModel = "models/doctor_who/sonic_screwdriver/w_4thsonicsd.mdl",
     SoundLoop = "sonicsd/loop_1968_1.wav",
