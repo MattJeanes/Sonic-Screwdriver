@@ -10,8 +10,8 @@ SonicSD:AddSonic({
     DefaultLightColor = Color(50, 250, 50),
     DefaultLightColor2 = Color(0, 200, 100),
     DefaultLightColorOff = Color(0, 80, 0),
-    ModeSoundOn = "sonicsd/button_off_2.wav",
-    ModeSoundOff = "sonicsd/button_off_2.wav",
+    ModeSoundOn = "sonicsd/extend.mp3",
+    ModeSoundOff = "sonicsd/retract.mp3",
     Animations = {
         Mode = {
             Param = "switch",
