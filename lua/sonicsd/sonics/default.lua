@@ -4,7 +4,7 @@ SonicSD:AddSonic({
     ViewModel = "models/fuzzyleo/sonics/c_11thsonic.mdl",
     WorldModel = "models/fuzzyleo/sonics/w_11thsonic.mdl",
     LightPos = Vector(-100,0,0),
-    LightBrightness = 5,
+    LightBrightness = 2,
     SoundLoop = "sonicsd/loop_2010_1.wav",
     SoundLoop2 = "sonicsd/loop_2010_2.wav",
     DefaultLightColor = Color(50, 250, 50),
