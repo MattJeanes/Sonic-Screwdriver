@@ -4,7 +4,8 @@ VertexLitGeneric
 	$bumpmap "models/fuzzyleo/sonics/11thsonic/metal_n"
 	$surfaceprop "metal"
 
-
+	$envmap "env_cubemap"
+	$envmaptint "[0.1 0.1 0.1]"
 
 	$phong 					1
 	$phongexponent 			20
