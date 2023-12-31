@@ -1,13 +1,21 @@
 SonicSD:AddSonic({
     ID = "default",
     Name = "11th Doctor Screwdriver",
-    ViewModel = "models/weapons/c_sonicsd.mdl",
+    ViewModel = "models/fuzzyleo/sonics/c_11thsonic.mdl",
     WorldModel = "models/weapons/w_sonicsd.mdl",
-    LightPos = Vector(20,-1.75,-2.75),
+    LightPos = Vector(-200,-1.75,-2.75),
     LightBrightness = 5,
     SoundLoop = "sonicsd/loop_2010_1.wav",
     SoundLoop2 = "sonicsd/loop_2010_2.wav",
     DefaultLightColor = Color(50, 250, 50),
     DefaultLightColor2 = Color(0, 200, 100),
-    DefaultLightColorOff = Color(0, 80, 0)
+    DefaultLightColorOff = Color(0, 80, 0),
+    ModeSoundOn = "sonicsd/button_off_2.wav",
+    ModeSoundOff = "sonicsd/button_off_2.wav",
+    Animations = {
+        Mode = {
+            Param = "switch",
+            Speed = 1
+        }
+    }
 })
