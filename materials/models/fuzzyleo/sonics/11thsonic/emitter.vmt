@@ -15,7 +15,7 @@ VertexLitGeneric
 
 
 	$phong 					1
-	$phongexponent 			20
+	$phongexponent 			40
 	$phongboost 			10
 	$phongtint 				"[ .5 .5 .5 ]"
 	$phongfresnelranges 	"[0.05 0.5 1]"

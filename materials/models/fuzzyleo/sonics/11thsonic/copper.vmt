@@ -5,8 +5,8 @@ VertexLitGeneric
 	$surfaceprop "metal"
 
 	$envmap "env_cubemap"
-	$envmaptint "[0.1 0.02 0]"
-	$envmapcontrast 0.1
+	$envmaptint "[0.2 0.05 0]"
+
 
 	$phong 					1
 	$phongexponent 			20
