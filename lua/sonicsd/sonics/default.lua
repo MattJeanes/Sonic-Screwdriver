@@ -1,6 +1,6 @@
 SonicSD:AddSonic({
     ID = "default",
-    Name = "2010 Screwdriver",
+    Name = "11th Doctor Screwdriver",
     ViewModel = "models/weapons/c_sonicsd.mdl",
     WorldModel = "models/weapons/w_sonicsd.mdl",
     LightPos = Vector(20,-1.75,-2.75),
