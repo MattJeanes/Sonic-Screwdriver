@@ -1,0 +1,17 @@
+VertexLitGeneric
+{
+	$baseTexture	"models/fuzzyleo/sonics/11thsonic/copper"
+	$bumpmap "models/fuzzyleo/sonics/11thsonic/copper_n"
+	$surfaceprop "metal"
+
+	$envmap "env_cubemap"
+	$envmaptint "[0.1 0.02 0]"
+	$envmapcontrast 0.1
+
+	$phong 					1
+	$phongexponent 			20
+	$phongboost 			10
+	$phongtint 				"[ .5 .5 .5 ]"
+	$phongfresnelranges 	"[0.05 0.5 1]"
+
+}
