@@ -37,7 +37,12 @@ SonicSD:AddSonic({
     WorldModel = "models/doctor_who/sonic_screwdriver/w_4thsonicsd.mdl",
     SoundLoop = "sonicsd/loop_1968_1.wav",
     SoundLoop2 = "sonicsd/loop_1968_2.wav",
+    DefaultLightColor = Color(0, 0, 0),
+    DefaultLightColor2 = Color(0, 0, 0),
+    DefaultLightColorOff = Color(160, 0, 0),
     LightDisabled = true,
+    ModeSoundOn = "sonicsd/button_off_2.wav",
+    ModeSoundOff = "sonicsd/button_off_2.wav",
     Animations = {
         Mode = {
             Param = "extend",

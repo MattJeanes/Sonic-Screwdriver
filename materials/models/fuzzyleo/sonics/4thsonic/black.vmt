@@ -1,0 +1,13 @@
+VertexLitGeneric
+{
+	$baseTexture	"models/fuzzyleo/sonics/4thsonic/black"
+	$bumpmap 	"models/fuzzyleo/sonics/10thsonic/smoothnormal"
+	$surfaceprop "metal"
+
+	$phong 					1
+	$phongexponent 			20
+	$phongboost 			10
+	$phongtint 				"[ 1 1 1 ]"
+	$phongfresnelranges 	"[0.1 0.5 1]"
+
+}
