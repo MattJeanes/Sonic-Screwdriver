@@ -34,7 +34,7 @@ SonicSD:AddSonic({
     ID = "4thdocsonic",
     Name = "4th Doctor Screwdriver",
     ViewModel = "models/fuzzyleo/sonics/c_4thsonic.mdl",
-    WorldModel = "models/doctor_who/sonic_screwdriver/w_4thsonicsd.mdl",
+    WorldModel = "models/fuzzyleo/sonics/w_4thsonic.mdl",
     SoundLoop = "sonicsd/loop_1968_1.wav",
     SoundLoop2 = "sonicsd/loop_1968_2.wav",
     DefaultLightColor = Color(0, 0, 0),
