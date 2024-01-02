@@ -31,11 +31,21 @@ SonicSD:AddSonic({
 })
 
 SonicSD:AddSonic({
-    ID = "4th-slogan",
+    ID = "4thdocsonic",
     Name = "4th Doctor Screwdriver",
-    ViewModel = "models/doctor_who/sonic_screwdriver/c_4thsonicsd.mdl",
+    ViewModel = "models/fuzzyleo/sonics/c_4thsonic.mdl",
     WorldModel = "models/doctor_who/sonic_screwdriver/w_4thsonicsd.mdl",
     SoundLoop = "sonicsd/loop_1968_1.wav",
     SoundLoop2 = "sonicsd/loop_1968_2.wav",
-    LightDisabled = true
+    LightDisabled = true,
+    Animations = {
+        Mode = {
+            Param = "extend",
+            Speed = 1
+        },
+        Toggle = {
+            Param = "active",
+            Speed = 1
+        }
+    }
 })
