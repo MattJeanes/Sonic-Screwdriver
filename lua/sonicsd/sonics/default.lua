@@ -71,11 +71,11 @@ SonicSD:AddSonic({
     Animations = {
         Mode = {
             Param = "extend",
-            Speed = 3
+            Speed = 1.5
         },
         Toggle = {
             Param = "active",
-            Speed = 3
+            Speed = 1
         }
     }
 })
