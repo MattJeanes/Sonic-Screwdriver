@@ -1,6 +1,15 @@
 VertexLitGeneric
 {
 	$baseTexture	"models/fuzzyleo/sonics/10thsonic/SonicEmmitter"
+
+	$EmissiveBlendEnabled 		1
+	$EmissiveBlendStrength 	1
+	$EmissiveBlendTexture 		"vgui/white"
+	$EmissiveBlendBaseTexture 		"models/fuzzyleo/sonics/10thsonic/SonicEmmitter_e"
+	$EmissiveBlendFlowTexture 		"vgui/white"
+	$EmissiveBlendTint 				" [ 1 1 1 ] "
+	$EmissiveBlendScrollVector 		" [ 0 0 ] "
+
 	$bumpmap "models/fuzzyleo/sonics/10thsonic/smoothnormal"
 
 	$selfillum 1
@@ -13,9 +22,17 @@ VertexLitGeneric
 
 	Proxies
 	{
-		SonicSDColor
+		SonicSDColorOff
 		{
 			resultVar	$color2
+	}
+		SonicSDColor
+		{
+			resultVar	$EmissiveBlendTint
+	}
+		SonicSDLightBool
+		{
+			resultVar $EmissiveBlendStrength
 	}
 
 }
