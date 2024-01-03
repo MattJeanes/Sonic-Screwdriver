@@ -66,9 +66,7 @@ matproxy.Add(
 
         local cold = Vector(GetConVarNumber("sonic_lightoff_r")/255, GetConVarNumber("sonic_lightoff_g")/255, GetConVarNumber("sonic_lightoff_b")/255)
 
-        col=cold
-
-        mat:SetVector( self.ResultTo, col );
+        mat:SetVector( self.ResultTo, cold );
 
     end
 })
@@ -93,10 +91,9 @@ matproxy.Add(
         local keydown1=owner:KeyDown(IN_ATTACK)
         local keydown2=owner:KeyDown(IN_ATTACK2)
 
+        local active=0
         if keydown2 or keydown1 then
             active=1
-        else
-            active=0
         end
 
         mat:SetFloat( self.ResultTo, active );
