@@ -1,13 +1,78 @@
 SonicSD:AddSonic({
     ID = "default",
-    Name = "2010 Screwdriver",
-    ViewModel = "models/weapons/c_sonicsd.mdl",
-    WorldModel = "models/weapons/w_sonicsd.mdl",
-    LightPos = Vector(20,-1.75,-2.75),
-    LightBrightness = 5,
+    Name = "11th Doctor Screwdriver",
+    ViewModel = "models/fuzzyleo/sonics/c_11thsonic.mdl",
+    WorldModel = "models/fuzzyleo/sonics/w_11thsonic.mdl",
+    LightPos = Vector(-100,0,0),
+    LightBrightness = 2,
     SoundLoop = "sonicsd/loop_2010_1.wav",
     SoundLoop2 = "sonicsd/loop_2010_2.wav",
     DefaultLightColor = Color(50, 250, 50),
     DefaultLightColor2 = Color(0, 200, 100),
-    DefaultLightColorOff = Color(0, 80, 0)
+    DefaultLightColorOff = Color(0, 80, 0),
+    ModeSoundOn = "sonicsd/extend.mp3",
+    ModeSoundOff = "sonicsd/retract.mp3",
+    Animations = {
+        Mode = {
+            Param = "switch",
+            Speed = 1
+        }
+    }
+})
+
+SonicSD:AddSonic({
+    ID = "9thdocsonic",
+    Name = "9th Doctor Screwdriver",
+    ViewModel = "models/fuzzyleo/sonics/c_10thsonic.mdl",
+    WorldModel = "models/fuzzyleo/sonics/w_10thsonic.mdl",
+    Skin = 0,
+    LightPos = Vector(-100,0,0),
+    LightBrightness = 2,
+    SoundLoop = "sonicsd/loop_2005_1.wav",
+    SoundLoop2 = "sonicsd/loop_2005_2.wav",
+    ButtonSoundOff = "sonicsd/button_off_2.wav",
+    DefaultLightColor = Color(0, 20, 218),
+    DefaultLightColor2 = Color(17, 5, 255),
+    DefaultLightColorOff = Color(0, 12, 82),
+    ModeSoundOn = "sonicsd/button_off_2.wav",
+    ModeSoundOff = "sonicsd/button_off_2.wav",
+    ModeLightPos = Vector(-100,0,0),
+    Animations = {
+        Mode = {
+            Param = "switch",
+            Speed = 1
+        }
+    }
+})
+
+SonicSD:AddSonic({
+    ID = "10thdocsonic",
+    Base = "9thdocsonic",
+    Name = "10th Doctor Screwdriver",
+    Skin = 1
+})
+
+SonicSD:AddSonic({
+    ID = "4thdocsonic",
+    Name = "4th Doctor Screwdriver",
+    ViewModel = "models/fuzzyleo/sonics/c_4thsonic.mdl",
+    WorldModel = "models/fuzzyleo/sonics/w_4thsonic.mdl",
+    SoundLoop = "sonicsd/loop_1968_1.wav",
+    SoundLoop2 = "sonicsd/loop_1968_2.wav",
+    DefaultLightColor = Color(0, 0, 0),
+    DefaultLightColor2 = Color(0, 0, 0),
+    DefaultLightColorOff = Color(160, 0, 0),
+    LightDisabled = true,
+    ModeSoundOn = "sonicsd/button_off_2.wav",
+    ModeSoundOff = "sonicsd/button_off_2.wav",
+    Animations = {
+        Mode = {
+            Param = "extend",
+            Speed = 1
+        },
+        Toggle = {
+            Param = "active",
+            Speed = 1
+        }
+    }
 })

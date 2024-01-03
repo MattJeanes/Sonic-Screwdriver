@@ -1,0 +1,23 @@
+VertexLitGeneric
+{
+	$baseTexture	"models/fuzzyleo/sonics/11thsonic/emitteroff"
+	$bumpmap "models/fuzzyleo/sonics/10thsonic/smoothnormal"
+
+	$selfillum 0
+
+	$phong 					1
+	$phongexponent 			40
+	$phongboost 			10
+	$phongtint 				"[ .5 .5 .5 ]"
+	$phongfresnelranges 	"[0.05 0.5 1]"
+
+
+
+	Proxies
+	{
+		SonicSDColorOff
+		{
+			resultVar	$color2
+	}
+
+}

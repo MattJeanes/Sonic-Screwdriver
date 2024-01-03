@@ -46,3 +46,57 @@ matproxy.Add(
 
     end
 })
+
+matproxy.Add(
+{
+    name    =   "SonicSDColorOff",
+
+    init    =   function( self, mat, values )
+
+        self.ResultTo = values.resultvar
+
+    end,
+
+    bind    =   function( self, mat, ent )
+
+        if not IsValid( ent ) then return end
+
+        local owner = ent:GetOwner();
+        if not (IsValid(owner) and owner:IsPlayer()) then return end
+
+        local cold = Vector(GetConVarNumber("sonic_lightoff_r")/255, GetConVarNumber("sonic_lightoff_g")/255, GetConVarNumber("sonic_lightoff_b")/255)
+
+        mat:SetVector( self.ResultTo, cold );
+
+    end
+})
+
+matproxy.Add(
+{
+    name    =   "SonicSDLightBool",
+
+    init    =   function( self, mat, values )
+
+        self.ResultTo = values.resultvar
+
+    end,
+
+    bind    =   function( self, mat, ent )
+
+        if not IsValid( ent ) then return end
+
+        local owner = ent:GetOwner();
+        if not (IsValid(owner) and owner:IsPlayer()) then return end
+
+        local keydown1=owner:KeyDown(IN_ATTACK)
+        local keydown2=owner:KeyDown(IN_ATTACK2)
+
+        local active=0
+        if keydown2 or keydown1 then
+            active=1
+        end
+
+        mat:SetFloat( self.ResultTo, active );
+
+    end
+})
