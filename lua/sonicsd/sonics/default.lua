@@ -10,8 +10,8 @@ SonicSD:AddSonic({
     DefaultLightColor = Color(50, 250, 50),
     DefaultLightColor2 = Color(0, 200, 100),
     DefaultLightColorOff = Color(0, 80, 0),
-    ModeSoundOn = "sonicsd/extend.mp3",
-    ModeSoundOff = "sonicsd/retract.mp3",
+    ModeSoundOn = "sonicsd/extend_2010.wav",
+    ModeSoundOff = "sonicsd/retract_2010.wav",
     Animations = {
         Mode = {
             Param = "switch",
@@ -34,8 +34,8 @@ SonicSD:AddSonic({
     DefaultLightColor = Color(0, 20, 218),
     DefaultLightColor2 = Color(17, 5, 255),
     DefaultLightColorOff = Color(0, 12, 82),
-    ModeSoundOn = "sonicsd/button_off_2.wav",
-    ModeSoundOff = "sonicsd/button_off_2.wav",
+    ModeSoundOn = "sonicsd/extend_2005.wav",
+    ModeSoundOff = "sonicsd/retract_2005.wav",
     ModeLightPos = Vector(-100,0,0),
     Animations = {
         Mode = {
@@ -59,20 +59,23 @@ SonicSD:AddSonic({
     WorldModel = "models/fuzzyleo/sonics/w_4thsonic.mdl",
     SoundLoop = "sonicsd/loop_1968_1.wav",
     SoundLoop2 = "sonicsd/loop_1968_2.wav",
+    ButtonSoundOn = "sonicsd/button_on_2.wav",
+    ButtonSoundOff = "sonicsd/button_off_3.wav",
+    ButtonDelay = 0.1,
     DefaultLightColor = Color(0, 0, 0),
     DefaultLightColor2 = Color(0, 0, 0),
     DefaultLightColorOff = Color(160, 0, 0),
     LightDisabled = true,
-    ModeSoundOn = "sonicsd/button_off_2.wav",
-    ModeSoundOff = "sonicsd/button_off_2.wav",
+    ModeSoundOn = "sonicsd/extend_1968.wav",
+    ModeSoundOff = "sonicsd/retract_1968.wav",
     Animations = {
         Mode = {
             Param = "extend",
-            Speed = 1
+            Speed = 3
         },
         Toggle = {
             Param = "active",
-            Speed = 1
+            Speed = 3
         }
     }
 })
