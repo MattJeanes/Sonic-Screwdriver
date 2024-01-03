@@ -29,11 +29,11 @@ VertexLitGeneric
 	}
 		SonicSDColor
 		{
-			resultVar	$EmissiveBlendTint 	
+			resultVar	$EmissiveBlendTint
 	}
 		SonicSDLightBool
 		{
-			resultVar $EmissiveBlendStrength 
+			resultVar $EmissiveBlendStrength
 	}
 
 
