@@ -49,6 +49,54 @@ matproxy.Add(
 
 matproxy.Add(
 {
+    name    =   "SonicSDColorStatic",
+
+    init    =   function( self, mat, values )
+
+        self.ResultTo = values.resultvar
+
+    end,
+
+    bind    =   function( self, mat, ent )
+
+        if not IsValid( ent ) then return end
+
+        local owner = ent:GetOwner();
+        if not (IsValid(owner) and owner:IsPlayer()) then return end
+
+        local cold = Vector(GetConVarNumber("sonic_light_r")/255, GetConVarNumber("sonic_light_g")/255, GetConVarNumber("sonic_light_b")/255)
+
+        mat:SetVector( self.ResultTo, cold );
+
+    end
+})
+
+matproxy.Add(
+{
+    name    =   "SonicSDColor2Static",
+
+    init    =   function( self, mat, values )
+
+        self.ResultTo = values.resultvar
+
+    end,
+
+    bind    =   function( self, mat, ent )
+
+        if not IsValid( ent ) then return end
+
+        local owner = ent:GetOwner();
+        if not (IsValid(owner) and owner:IsPlayer()) then return end
+
+        local cold = Vector(GetConVarNumber("sonic_light2_r")/255, GetConVarNumber("sonic_light2_g")/255, GetConVarNumber("sonic_light2_b")/255)
+
+        mat:SetVector( self.ResultTo, cold );
+
+    end
+})
+
+matproxy.Add(
+{
     name    =   "SonicSDColorOff",
 
     init    =   function( self, mat, values )
