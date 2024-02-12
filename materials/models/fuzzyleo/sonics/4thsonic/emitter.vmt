@@ -15,7 +15,7 @@ VertexLitGeneric
 
 	Proxies
 	{
-		SonicSDColorOff
+		SonicSDColorStatic
 		{
 			resultVar	$color2
 	}

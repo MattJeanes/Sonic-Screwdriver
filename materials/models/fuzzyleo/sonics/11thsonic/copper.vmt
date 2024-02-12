@@ -5,13 +5,13 @@ VertexLitGeneric
 	$surfaceprop "metal"
 
 	$envmap "env_cubemap"
-	$envmaptint "[0.3 0.05 0]"
+	$envmaptint "[0.2 0.05 0.01]"
 
 
 	$phong 					1
 	$phongexponent 			20
 	$phongboost 			10
-	$phongtint 				"[ .5 .5 .5 ]"
+	$phongtint 				"[ 2 .9 .4 ]"
 	$phongfresnelranges 	"[0.05 0.5 1]"
 
 }
